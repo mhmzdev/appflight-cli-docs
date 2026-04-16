@@ -2,7 +2,10 @@
   "name": "AppFlight CLI",
   "description": "Upload Android APKs to AppFlight from your terminal or CI pipeline",
   "favicon": "https://raw.githubusercontent.com/mhmzdev/appflight-cli-docs/main/docs/assets/favicon.png",
-  "logo": "https://raw.githubusercontent.com/mhmzdev/appflight-cli-docs/main/docs/assets/favicon.png",
+  "logo": {
+    "light": "https://raw.githubusercontent.com/mhmzdev/appflight-cli-docs/main/docs/assets/favicon.png",
+    "dark": "https://raw.githubusercontent.com/mhmzdev/appflight-cli-docs/main/docs/assets/favicon.png"
+  },
   "theme": {
     "primary": "#FF9100"
   },

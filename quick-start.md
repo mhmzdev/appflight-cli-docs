@@ -1,0 +1,61 @@
+# Quick Start
+
+## 1. Generate an API key
+
+Open the **AppFlight mobile app** → **Settings → API Keys** → tap **+**.
+
+Give it a label (e.g. `Macbook`) and copy the key. You won't see it again.
+
+> **⚠️ Warning:** Store the key securely. It cannot be viewed again after dismissing the dialog — only revoked and regenerated.
+
+## 2. Install the CLI
+
+```bash
+dart pub global activate appflight_cli
+```
+
+## 3. Login
+
+```bash
+appflight_cli login
+```
+
+Paste your API key when prompted. Credentials are saved to `~/.appflight/credentials.json`.
+
+## 4. Init your project
+
+Run from your Flutter project root.
+
+**Flavored app:**
+
+```bash
+appflight_cli init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
+```
+
+The format is `flavorName:packageName` per flavor, comma-separated.
+
+**No-flavor app:**
+
+```bash
+appflight_cli init
+```
+
+You'll be prompted for the package name (applicationId).
+
+This creates `appflight.json` in your project root. Commit it — it's shared with your team.
+
+## 5. Build and upload
+
+```bash
+flutter build apk --flavor stage --release
+appflight_cli upload --flavor stage
+```
+
+Your testers will be notified automatically.
+
+---
+
+**Next steps:**
+- Set up [CI/CD](ci/github-actions.md) so uploads happen automatically
+- Read the [upload command reference](commands/upload.md) for all flags
+- Learn about [environment variables](environment-variables.md) for CI

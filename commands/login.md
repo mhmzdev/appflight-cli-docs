@@ -1,0 +1,38 @@
+# login
+
+Verifies your API key and saves credentials to `~/.appflight/credentials.json`.
+
+```bash
+appflight_cli login
+```
+
+## Steps
+
+1. Generate a key in the **AppFlight mobile app → Settings → API Keys**
+2. Run `appflight_cli login`
+3. Paste the key when prompted (input is hidden)
+
+The CLI verifies the key against AppFlight before saving. If verification fails, nothing is written.
+
+## Credentials file
+
+Saved to `~/.appflight/credentials.json` with `600` permissions (owner read/write only).
+
+```json
+{
+  "apiKey": "appflight_xxxxxxxxxxxx",
+  "uid": "firebase-uid",
+  "email": "you@example.com"
+}
+```
+
+> **⚠️ Warning:** Never commit `~/.appflight/credentials.json`. For CI/CD, use the `APPFLIGHT_API_KEY` environment variable instead — no `login` step required.
+
+## CI / CD
+
+On build servers, skip `login` and set the environment variable:
+
+```bash
+export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
+appflight_cli upload --flavor stage
+```

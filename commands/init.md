@@ -1,0 +1,62 @@
+# init
+
+Creates `appflight.json` in your Flutter project root. Run once per project.
+
+```bash
+appflight_cli init [--flavors <definitions>] [--force]
+```
+
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--flavors` | Comma-separated flavor definitions in `name:packageName` format |
+| `--force`, `-f` | Overwrite an existing `appflight.json` |
+
+## Flavored app
+
+```bash
+appflight_cli init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
+```
+
+Each entry is `flavorName:packageName`. The flavor name becomes the key in `appflight.json` and maps to the APK filename (e.g. `app-stage-release.apk`).
+
+## No-flavor app
+
+```bash
+appflight_cli init
+```
+
+Prompts for a single package name (applicationId).
+
+## Output
+
+```json
+{
+  "version": 1,
+  "projectType": "flutter",
+  "apps": {
+    "stage": {
+      "appflightAppId": "com.myapp.stage",
+      "packageName": "com.myapp.stage",
+      "apkPath": "build/app/outputs/flutter-apk/app-stage-release.apk"
+    },
+    "prod": {
+      "appflightAppId": "com.myapp",
+      "packageName": "com.myapp",
+      "apkPath": "build/app/outputs/flutter-apk/app-prod-release.apk"
+    }
+  },
+  "defaultFlavor": "stage"
+}
+```
+
+Commit `appflight.json` — it's team-shared config.
+
+## Package name validation
+
+- Must be lowercase, dot-separated, at least 3 segments (e.g. `com.mycompany.myapp`)
+- `com.example.app` is not allowed
+- Each flavor must have a unique package name
+
+> **Note:** To re-run on an existing project: `appflight_cli init --flavors ... --force`

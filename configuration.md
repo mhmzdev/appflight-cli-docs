@@ -1,0 +1,76 @@
+# appflight.json
+
+Lives in your Flutter project root alongside `pubspec.yaml`. Commit it — it's team-shared config.
+
+## Full example
+
+```json
+{
+  "version": 1,
+  "projectType": "flutter",
+  "apps": {
+    "stage": {
+      "appflightAppId": "com.myapp.stage",
+      "packageName": "com.myapp.stage",
+      "apkPath": "build/app/outputs/flutter-apk/app-stage-release.apk"
+    },
+    "qa": {
+      "appflightAppId": "com.myapp.qa",
+      "packageName": "com.myapp.qa",
+      "apkPath": "build/app/outputs/flutter-apk/app-qa-release.apk"
+    },
+    "prod": {
+      "appflightAppId": "com.myapp",
+      "packageName": "com.myapp",
+      "apkPath": "build/app/outputs/flutter-apk/app-prod-release.apk"
+    }
+  },
+  "defaultFlavor": "stage"
+}
+```
+
+## Fields
+
+### `version`
+Schema version. Always `1`.
+
+### `projectType`
+Always `"flutter"`. React Native support is planned.
+
+### `apps`
+Map of flavor name → app entry. No-flavor projects have a single `"default"` entry.
+
+**App entry fields:**
+
+| Field | Description |
+|-------|-------------|
+| `appflightAppId` | App identifier on AppFlight (matches `packageName`) |
+| `packageName` | Android applicationId registered on AppFlight |
+| `apkPath` | Relative path to the built APK from project root |
+
+### `defaultFlavor`
+Used when `appflight_cli upload` is run without `--flavor`. Omitted for no-flavor projects.
+
+## No-flavor project
+
+```json
+{
+  "version": 1,
+  "projectType": "flutter",
+  "apps": {
+    "default": {
+      "appflightAppId": "com.mycompany.myapp",
+      "packageName": "com.mycompany.myapp",
+      "apkPath": "build/app/outputs/flutter-apk/app-release.apk"
+    }
+  }
+}
+```
+
+## Custom APK path
+
+`apkPath` is set automatically by `init`. If your build produces APKs elsewhere, edit it manually or use `--file` at upload time:
+
+```bash
+appflight_cli upload --flavor stage --file path/to/custom.apk
+```

@@ -1,0 +1,199 @@
+# Troubleshooting
+
+Common errors and how to fix them.
+
+---
+
+## Upload errors
+
+### Version already exists
+
+```
+✗ Version 1.0.0 already exists for com.myapp.stage.
+✗ Bump the version in pubspec.yaml or use --version.
+```
+
+**Cause:** You've already uploaded this version. AppFlight doesn't allow overwriting an existing build.
+
+**Fix:** Bump the version in `pubspec.yaml` and rebuild, or override at upload time:
+
+```bash
+appflight_cli upload --flavor stage --version 1.0.1
+```
+
+---
+
+### App not found
+
+```
+✗ App not found on AppFlight: com.myapp.stage
+```
+
+**Cause:** The package name in `appflight.json` doesn't match any app registered on AppFlight. The app must be created in the **AppFlight mobile app** before the CLI can upload to it.
+
+**Fix:**
+1. Open the AppFlight mobile app and create the app with the exact same package name
+2. Or check `appflight.json` for a typo in `packageName`
+
+---
+
+### Package name already taken
+
+```
+✗ An app with package name "com.myapp.stage" already exists.
+```
+
+**Cause:** Another AppFlight user or organization has already registered this package name. Package names are unique across the entire platform — the same rule that applies on the Google Play Store.
+
+**Fix:** You cannot upload to a package name owned by someone else. If this is your app:
+- Contact AppFlight support if the name was registered by mistake
+- Or use a different, unique package name
+
+---
+
+### APK not found
+
+```
+✗ APK not found at build/app/outputs/flutter-apk/app-stage-release.apk
+✗ Did you forget to run `flutter build apk --flavor stage --release`?
+```
+
+**Cause:** Either the build hasn't been run, or the APK is at a different path than what `appflight.json` expects.
+
+**Fix:**
+
+```bash
+# Build first
+flutter build apk --flavor stage --release
+
+# Or point directly at your APK
+appflight_cli upload --flavor stage --file path/to/app.apk
+```
+
+If your APK filename doesn't follow the standard Flutter pattern, edit `apkPath` in `appflight.json` manually.
+
+---
+
+### APK path flavor mismatch
+
+The `--flavors` flag uses a flavor name to derive the APK path. If your Flutter build flavor is `prod` but the package name's last segment is `app_flight`, the derived path would be `app-app_flight-release.apk` instead of `app-prod-release.apk`.
+
+**Fix:** Edit `apkPath` in `appflight.json` to match your actual build output:
+
+```json
+"prod": {
+  "packageName": "com.myapp",
+  "apkPath": "build/app/outputs/flutter-apk/app-prod-release.apk"
+}
+```
+
+---
+
+### Permission denied (org apps)
+
+```
+✗ Only admins and developers can upload to organization apps.
+```
+
+**Cause:** Your account has the `member` role in the organization. Only `admin` and `developer` roles can upload builds.
+
+**Fix:** Ask an admin to update your role in the AppFlight mobile app → Settings → Team.
+
+---
+
+## Auth errors
+
+### Not logged in
+
+```
+✗ Not logged in. Run `appflight_cli login` or set APPFLIGHT_API_KEY.
+```
+
+**Fix:**
+
+```bash
+# Interactive login
+appflight_cli login
+
+# Or set env var (CI/CD)
+export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
+```
+
+---
+
+### API key invalid or revoked
+
+```
+✗ API key rejected. Check it and try again.
+```
+
+**Cause:** The key was revoked in the AppFlight mobile app, or copied incorrectly.
+
+**Fix:**
+1. Go to **AppFlight app → Settings → API Keys**
+2. Check if the key is still active (not revoked)
+3. Generate a new key if needed, then run `appflight_cli login` again
+
+---
+
+### Seeing `uid: bypass` on `whoami`
+
+**Cause:** The CLI is still hitting the local Firebase emulator instead of stage. This happens when `APPFLIGHT_ENV=local` or `APPFLIGHT_BASE_URL` is set in your shell.
+
+**Fix:**
+
+```bash
+unset APPFLIGHT_ENV
+unset APPFLIGHT_BASE_URL
+appflight_cli whoami
+```
+
+---
+
+## Init errors
+
+### Invalid package name format
+
+```
+✗ Invalid: "com.MyApp.Stage"
+  Must be lowercase, dot-separated, at least 3 segments.
+  Example: com.mycompany.myapp
+```
+
+**Rules:**
+- All lowercase
+- Dot-separated with at least 3 segments
+- Letters, digits, and underscores only
+- Cannot be `com.example.app`
+
+---
+
+### Spaces after commas in --flavors
+
+```bash
+# Wrong — shell splits on the space, second package is dropped silently
+appflight_cli init --flavors stage:com.myapp.stage, prod:com.myapp
+
+# Correct — no spaces
+appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp
+```
+
+---
+
+### appflight.json already exists
+
+```
+⚠ appflight.json already exists. Use --force to overwrite.
+```
+
+**Fix:**
+
+```bash
+appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp --force
+```
+
+---
+
+## Still stuck?
+
+Run with `--verbose` for detailed output, or check `appflight_cli --help` for all available flags.

@@ -1,0 +1,83 @@
+# upload
+
+Uploads a built APK to AppFlight. This is the primary command.
+
+```bash
+appflight_cli upload [--flavor <name>] [options]
+```
+
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--flavor`, `-f` | Flavor to upload. **Required** when the project has multiple flavors configured. |
+| `--file` | Path to the APK. Overrides `apkPath` from `appflight.json`. |
+| `--version` | Version string. Overrides `pubspec.yaml`. |
+| `--build-number` | Build number. Overrides the `+buildNumber` from `pubspec.yaml`. |
+| `--env` | API environment (`stage`, `prod`). Overrides `APPFLIGHT_ENV`. |
+| `--dry-run` | Print what would be uploaded without actually uploading. |
+| `--ci` | CI mode: prefix log lines with `[appflight]`, disable progress bar. |
+
+## Usage
+
+**Flavored app** — `--flavor` is required:
+
+```bash
+appflight_cli upload --flavor stage
+appflight_cli upload --flavor prod
+```
+
+**No-flavor app:**
+
+```bash
+appflight_cli upload
+```
+
+**Dry run first:**
+
+```bash
+appflight_cli upload --flavor stage --dry-run
+```
+
+**CI mode:**
+
+```bash
+appflight_cli upload --flavor stage --ci
+```
+
+Also auto-detected when the `CI` environment variable is set.
+
+## Version resolution
+
+Version is read from `pubspec.yaml` by default:
+
+```yaml
+version: 1.2.3+45   # → version "1.2.3", build number "45"
+```
+
+Override with flags:
+
+```bash
+appflight_cli upload --flavor stage --version 1.2.3
+appflight_cli upload --flavor stage --build-number 99
+```
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Upload succeeded |
+| `2` | `appflight.json` not found — run `init` first |
+| `3` | Not logged in — run `login` or set `APPFLIGHT_API_KEY` |
+| `4` | APK file not found — build the APK first |
+| `5` | Version already exists — bump the version |
+| `6` | API key invalid or revoked — run `login` again |
+| `7` | Storage upload failed |
+
+## How it works internally
+
+1. `POST /v1/cli/upload-url` — requests a signed write URL from AppFlight
+2. `PUT <signedUrl>` — streams the APK directly to Firebase Storage
+3. `POST /v1/upload-apk` — registers metadata; AppFlight notifies testers
+
+No APK bytes pass through the AppFlight server, so there is no file size ceiling.

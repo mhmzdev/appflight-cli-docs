@@ -1,6 +1,7 @@
 {
   "name": "AppFlight CLI",
   "description": "Upload Android APKs to AppFlight from your terminal or CI pipeline",
+  "favicon": "/assets/favicon.png",
   "theme": {
     "primary": "#FF9100"
   },
@@ -11,40 +12,40 @@
     {
       "group": "Getting Started",
       "pages": [
-        { "title": "Overview", "href": "/", "icon": "rocket" },
-        { "title": "Installation", "href": "/installation", "icon": "download" },
-        { "title": "Quick Start", "href": "/quick-start", "icon": "zap" }
+        { "title": "🚀 Overview", "href": "/" },
+        { "title": "📦 Installation", "href": "/installation" },
+        { "title": "⚡ Quick Start", "href": "/quick-start" }
       ]
     },
     {
       "group": "Commands",
       "pages": [
-        { "title": "init", "href": "/commands/init", "icon": "folder-plus" },
-        { "title": "login", "href": "/commands/login", "icon": "key-round" },
-        { "title": "upload", "href": "/commands/upload", "icon": "cloud-upload" },
-        { "title": "whoami", "href": "/commands/whoami", "icon": "circle-user" },
-        { "title": "logout", "href": "/commands/logout", "icon": "log-out" }
+        { "title": "📁 init", "href": "/commands/init" },
+        { "title": "🔑 login", "href": "/commands/login" },
+        { "title": "☁️ upload", "href": "/commands/upload" },
+        { "title": "👤 whoami", "href": "/commands/whoami" },
+        { "title": "🚪 logout", "href": "/commands/logout" }
       ]
     },
     {
       "group": "Configuration",
       "pages": [
-        { "title": "appflight.json", "href": "/configuration", "icon": "file-json" },
-        { "title": "Environment Variables", "href": "/environment-variables", "icon": "square-terminal" }
+        { "title": "⚙️ appflight.json", "href": "/configuration" },
+        { "title": "🖥️ Environment Variables", "href": "/environment-variables" }
       ]
     },
     {
       "group": "CI / CD",
       "pages": [
-        { "title": "GitHub Actions", "href": "/ci/github-actions", "icon": "github" },
-        { "title": "Codemagic", "href": "/ci/codemagic", "icon": "wand-sparkles" },
-        { "title": "Bitrise", "href": "/ci/bitrise", "icon": "workflow" }
+        { "title": "🐙 GitHub Actions", "href": "/ci/github-actions" },
+        { "title": "✨ Codemagic", "href": "/ci/codemagic" },
+        { "title": "🔧 Bitrise", "href": "/ci/bitrise" }
       ]
     },
     {
       "group": "Help",
       "pages": [
-        { "title": "Troubleshooting", "href": "/troubleshooting", "icon": "circle-help" }
+        { "title": "🛠️ Troubleshooting", "href": "/troubleshooting" }
       ]
     }
   ]

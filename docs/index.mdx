@@ -25,6 +25,16 @@ The AppFlight mobile app is great for managing testers and browsing builds, but 
 4. **Login** — `appflight_cli login` and paste your key
 5. **Build and upload** — `flutter build apk --flavor stage --release && appflight_cli upload --flavor stage`
 
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`init`](/commands/init) | Create `appflight.json` in your project root |
+| [`login`](/commands/login) | Save your API key to `~/.appflight/credentials.json` |
+| [`upload`](/commands/upload) | Build and upload an APK to AppFlight |
+| [`whoami`](/commands/whoami) | Print the currently authenticated user |
+| [`logout`](/commands/logout) | Remove saved credentials from this machine |
+
 ## Requirements
 
 - Dart SDK `>=3.0.0`

@@ -1,0 +1,35 @@
+---
+title: Supported Frameworks
+description: AppFlight CLI works with Flutter today, with React Native support on the way.
+---
+
+AppFlight CLI is designed around cross-platform mobile development. Current and planned framework support:
+
+## Flutter
+
+**Fully supported.**
+
+The CLI is Flutter-first — every command, flag, and guide is built around Flutter project conventions.
+
+- `appflight.json` maps flavor names to Android package names and APK paths
+- APK paths follow the standard Flutter build output: `build/app/outputs/flutter-apk/app-<flavor>-release.apk`
+- Version and build number read directly from `pubspec.yaml`
+- Works with any flavor setup: single-flavor, multi-flavor, or no flavor
+
+```bash
+# Flavored Flutter app
+appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp
+appflight_cli upload --flavor stage
+
+# No-flavor Flutter app
+appflight_cli init
+appflight_cli upload
+```
+
+## React Native
+
+**Coming soon.**
+
+React Native support is planned. APK upload and tester distribution will work with standard React Native Android build outputs.
+
+When available, `appflight.json` will support a `"projectType": "react-native"` entry with paths to your Gradle-produced APKs.

@@ -35,7 +35,8 @@
       "group": "Configuration",
       "pages": [
         { "title": "⚙️ appflight.json", "href": "/configuration" },
-        { "title": "🖥️ Environment Variables", "href": "/environment-variables" }
+        { "title": "🖥️ Environment Variables", "href": "/environment-variables" },
+        { "title": "🧩 Supported Frameworks", "href": "/frameworks" }
       ]
     },
     {

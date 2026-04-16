@@ -1,56 +1,32 @@
 ---
-title: Welcome to docs.page!
-description: Get started with docs.page
+title: AppFlight CLI
+description: Upload Android APKs to AppFlight directly from your terminal or CI pipeline — no phone required.
 ---
 
-Welcome to docs.page! The init command you just ran has created a basic file struture in your project to help you get started.
+AppFlight CLI lets you upload Android APKs to AppFlight directly from your laptop or CI pipeline — no phone required.
 
-## Walkthrough
-
-### Configuration
-
-In the root of your directory a new `docs.json` file has been created. This file is used to configure your documentation site. You can customize the name, description, and sidebar, theme, logos and more using this file.
-
-Here's a basic example of what the file looks like:
-
-```
-{
-  "name": "My Docs",
-  "description": "My documentation site",
-  "sidebar": [
-  {
-    "group": "Getting Started",
-    "pages": [
-      {
-        "title": "Getting to know docs.page",
-        "href": "/",
-        "icon": "rocket"
-      },
-      {
-        "title": "Next Steps",
-        "href": "/next-steps",
-        "icon": "arrow-right"
-      }
-    ]
-  }
-]
-}
+```bash
+appflight_cli upload --flavor stage
 ```
 
-To learn more about the advanced configuration options, check out the [docs](https://use.docs.page/configuration).
+## Why CLI?
 
-### Content
+The AppFlight mobile app is great for managing testers and browsing builds, but real development happens on laptops and build servers. The CLI closes that loop:
 
-docs.page uses the `docs` directory to store your documentation pages. Two pages have been created for you:
+- Build on your machine → upload in one command
+- Wire into GitHub Actions, Codemagic, or Bitrise
+- No Firebase credentials or service account keys needed — just an API key
 
-- `index.mdx` - The home page of your documentation site, resolves to the root URL.
-- `next-steps.mdx` - A page to help you get started with docs.page, resolves to `/next-steps`.
+## How it works
 
-Documentation can be written using the standard [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and also supports the use of [MDX](https://mdxjs.com/), 
-with the ability to render custom [components](https://use.docs.page/components) for more advanced use cases.
+1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → tap **+**
+2. **Install the CLI** — `dart pub global activate appflight_cli`
+3. **Init your project** — `appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp`
+4. **Login** — `appflight_cli login` and paste your key
+5. **Build and upload** — `flutter build apk --flavor stage --release && appflight_cli upload --flavor stage`
 
-## Preview
+## Requirements
 
-To preview your documentation site, head over to [https://docs.page/preview](https://docs.page/preview) in your browser and open this directory.
-
-Previewing your documentation site will allow you to see the changes you make in real-time before you publish to the world.
+- Dart SDK `>=3.0.0`
+- An AppFlight account with at least one app created
+- An API key from the AppFlight mobile app

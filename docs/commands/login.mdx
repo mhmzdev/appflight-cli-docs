@@ -1,4 +1,7 @@
-# login
+---
+title: login
+description: Verifies your API key and saves credentials to ~/.appflight/credentials.json.
+---
 
 Verifies your API key and saves credentials to `~/.appflight/credentials.json`.
 
@@ -26,7 +29,7 @@ Saved to `~/.appflight/credentials.json` with `600` permissions (owner read/writ
 }
 ```
 
-> **⚠️ Warning:** Never commit `~/.appflight/credentials.json`. For CI/CD, use the `APPFLIGHT_API_KEY` environment variable instead — no `login` step required.
+> **Warning:** Never commit `~/.appflight/credentials.json`. For CI/CD, use the `APPFLIGHT_API_KEY` environment variable instead — no `login` step required.
 
 ## CI / CD
 

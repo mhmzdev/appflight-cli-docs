@@ -1,21 +1,45 @@
 {
-  "name": "My Docs",
-  "description": "My documentation site",
+  "name": "AppFlight CLI",
+  "description": "Upload Android APKs to AppFlight from your terminal or CI pipeline",
   "sidebar": [
-  {
-    "group": "Getting Started",
-    "pages": [
-      {
-        "title": "Getting to know docs.page",
-        "href": "/",
-        "icon": "rocket"
-      },
-      {
-        "title": "Next Steps",
-        "href": "/next-steps",
-        "icon": "arrow-right"
-      }
-    ]
-  }
-]
+    {
+      "group": "Getting Started",
+      "pages": [
+        { "title": "Overview", "href": "/", "icon": "rocket" },
+        { "title": "Installation", "href": "/installation", "icon": "download" },
+        { "title": "Quick Start", "href": "/quick-start", "icon": "zap" }
+      ]
+    },
+    {
+      "group": "Commands",
+      "pages": [
+        { "title": "init", "href": "/commands/init", "icon": "folder-plus" },
+        { "title": "login", "href": "/commands/login", "icon": "key-round" },
+        { "title": "upload", "href": "/commands/upload", "icon": "upload" },
+        { "title": "whoami", "href": "/commands/whoami", "icon": "user" },
+        { "title": "logout", "href": "/commands/logout", "icon": "log-out" }
+      ]
+    },
+    {
+      "group": "Configuration",
+      "pages": [
+        { "title": "appflight.json", "href": "/configuration", "icon": "file-code" },
+        { "title": "Environment Variables", "href": "/environment-variables", "icon": "terminal" }
+      ]
+    },
+    {
+      "group": "CI / CD",
+      "pages": [
+        { "title": "GitHub Actions", "href": "/ci/github-actions", "icon": "github" },
+        { "title": "Codemagic", "href": "/ci/codemagic", "icon": "layers" },
+        { "title": "Bitrise", "href": "/ci/bitrise", "icon": "layers-2" }
+      ]
+    },
+    {
+      "group": "Help",
+      "pages": [
+        { "title": "Troubleshooting", "href": "/troubleshooting", "icon": "life-buoy" }
+      ]
+    }
+  ]
 }

@@ -1,7 +1,6 @@
-# Troubleshooting
-
-Common errors and how to fix them.
-
+---
+title: Troubleshooting
+description: Common errors and how to fix them.
 ---
 
 ## Upload errors
@@ -43,11 +42,9 @@ appflight_cli upload --flavor stage --version 1.0.1
 ✗ An app with package name "com.myapp.stage" already exists.
 ```
 
-**Cause:** Another AppFlight user or organization has already registered this package name. Package names are unique across the entire platform — the same rule that applies on the Google Play Store.
+**Cause:** Another AppFlight user has already registered this package name. Package names are unique across the entire platform — the same rule that applies on the Google Play Store.
 
-**Fix:** You cannot upload to a package name owned by someone else. If this is your app:
-- Contact AppFlight support if the name was registered by mistake
-- Or use a different, unique package name
+**Fix:** You cannot upload to a package name owned by someone else. If this is your app, contact AppFlight support or use a different package name.
 
 ---
 
@@ -76,7 +73,7 @@ If your APK filename doesn't follow the standard Flutter pattern, edit `apkPath`
 
 ### APK path flavor mismatch
 
-The `--flavors` flag uses a flavor name to derive the APK path. If your Flutter build flavor is `prod` but the package name's last segment is `app_flight`, the derived path would be `app-app_flight-release.apk` instead of `app-prod-release.apk`.
+The `--flavors` flag uses a flavor name to derive the APK path. If your Flutter build flavor is `prod` but the package name's last segment is different, the derived path may not match.
 
 **Fix:** Edit `apkPath` in `appflight.json` to match your actual build output:
 

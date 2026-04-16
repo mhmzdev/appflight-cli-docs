@@ -1,6 +1,12 @@
 {
   "name": "AppFlight CLI",
   "description": "Upload Android APKs to AppFlight from your terminal or CI pipeline",
+  "theme": {
+    "primary": "#FF9100"
+  },
+  "social": {
+    "github": "mhmzdev/appflight-cli-docs"
+  },
   "sidebar": [
     {
       "group": "Getting Started",
@@ -15,30 +21,30 @@
       "pages": [
         { "title": "init", "href": "/commands/init", "icon": "folder-plus" },
         { "title": "login", "href": "/commands/login", "icon": "key-round" },
-        { "title": "upload", "href": "/commands/upload", "icon": "upload" },
-        { "title": "whoami", "href": "/commands/whoami", "icon": "user" },
+        { "title": "upload", "href": "/commands/upload", "icon": "cloud-upload" },
+        { "title": "whoami", "href": "/commands/whoami", "icon": "circle-user" },
         { "title": "logout", "href": "/commands/logout", "icon": "log-out" }
       ]
     },
     {
       "group": "Configuration",
       "pages": [
-        { "title": "appflight.json", "href": "/configuration", "icon": "file-code" },
-        { "title": "Environment Variables", "href": "/environment-variables", "icon": "terminal" }
+        { "title": "appflight.json", "href": "/configuration", "icon": "file-json" },
+        { "title": "Environment Variables", "href": "/environment-variables", "icon": "square-terminal" }
       ]
     },
     {
       "group": "CI / CD",
       "pages": [
         { "title": "GitHub Actions", "href": "/ci/github-actions", "icon": "github" },
-        { "title": "Codemagic", "href": "/ci/codemagic", "icon": "layers" },
-        { "title": "Bitrise", "href": "/ci/bitrise", "icon": "layers-2" }
+        { "title": "Codemagic", "href": "/ci/codemagic", "icon": "wand-sparkles" },
+        { "title": "Bitrise", "href": "/ci/bitrise", "icon": "workflow" }
       ]
     },
     {
       "group": "Help",
       "pages": [
-        { "title": "Troubleshooting", "href": "/troubleshooting", "icon": "life-buoy" }
+        { "title": "Troubleshooting", "href": "/troubleshooting", "icon": "circle-help" }
       ]
     }
   ]

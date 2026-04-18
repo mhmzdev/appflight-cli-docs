@@ -10,7 +10,7 @@ appflight_cli upload --flavor stage
 
 | | |
 |---|---|
-| 🌐 **Landing page** | https://app-flight-stage.web.app |
+| 🌐 **Landing page** | https://app-flight-prod.web.app |
 | 📖 **Documentation** | https://docs.page/mhmzdev/appflight-cli-docs |
 
 ## Quick Start

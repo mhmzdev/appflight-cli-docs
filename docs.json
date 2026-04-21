@@ -48,6 +48,12 @@
       ]
     },
     {
+      "group": "Plans",
+      "pages": [
+        { "title": "📋 Plans & Limits", "href": "/plans" }
+      ]
+    },
+    {
       "group": "Help",
       "pages": [
         { "title": "🛠️ Troubleshooting", "href": "/troubleshooting" }

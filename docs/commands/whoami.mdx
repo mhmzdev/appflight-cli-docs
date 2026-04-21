@@ -14,13 +14,23 @@ appflight_cli whoami
 ```
 uid:         abc123xyz
 email:       you@example.com
+type:        individual
+plan:        Economy (free)
 auth source: apiKey
 ```
+
+The `plan` field shows your current subscription tier:
+
+| Value | Meaning |
+|-------|---------|
+| `Economy (free)` | Free tier — 3 apps, 5 APKs per app |
+| `First Class` | Paid tier — expanded app and APK limits |
 
 ## When to use
 
 - After `login` to confirm the key was saved correctly
+- To check which subscription plan is active on the authenticated account
 - In CI logs to verify the right API key is active
-- When debugging authentication issues
+- When debugging authentication or plan-limit issues
 
 > **Note:** `whoami` reads credentials from `APPFLIGHT_API_KEY` (env var) first, then `~/.appflight/credentials.json`.

@@ -76,6 +76,30 @@ appflight_cli upload --flavor stage --build-number 99
 | `5` | Version already exists — bump the version |
 | `6` | API key invalid or revoked — run `login` again |
 | `7` | Storage upload failed |
+| `8` | APK limit reached — upgrade your plan |
+
+## Plan limits
+
+AppFlight enforces per-app APK limits based on your subscription:
+
+| Plan | APK limit per app |
+|------|-------------------|
+| Economy (free) | 5 APKs |
+| First Class | 10–15 APKs |
+
+When the limit is reached the upload is blocked and the CLI exits with code `8`:
+
+```
+✗ Upload blocked — you've reached your APK limit for this app.
+✗ Free plan: 5 APKs per app. Upgrade in the AppFlight mobile app.
+✗ Settings → Subscription → Upgrade to First Class
+```
+
+Run with `--verbose` to see the full server response:
+
+```bash
+appflight upload --flavor stage --verbose
+```
 
 ## How it works internally
 

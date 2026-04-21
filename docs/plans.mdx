@@ -1,0 +1,54 @@
+---
+title: Plans & Limits
+description: Economy and First Class plan limits enforced by the AppFlight CLI and backend.
+---
+
+AppFlight has two subscription tiers. Limits are enforced server-side — the CLI surfaces them as friendly errors with actionable guidance.
+
+## Plan comparison
+
+| Feature | Economy (free) | First Class |
+|---------|---------------|-------------|
+| Apps | 3 | 5 (individual) · 10 (org) |
+| APKs per app | 5 (individual) · 10 (org) | 10 (individual) · 15 (org) |
+| Build TTL | 14 days | 14 days |
+| CLI upload | ✓ | ✓ |
+| Tester push notifications | ✓ | ✓ |
+
+## How limits are enforced
+
+Limits are checked by the AppFlight backend on every upload attempt. The CLI never hard-codes limits — it reads the error response from the server, so any future limit changes apply automatically without a CLI update.
+
+When a limit is exceeded the server returns `HTTP 403` with `code: "PLAN_LIMIT"` and the CLI exits with code `8`.
+
+## Checking your plan
+
+```bash
+appflight whoami
+```
+
+```
+uid:         abc123xyz
+email:       you@example.com
+type:        individual
+plan:        Economy (free)
+auth source: apiKey
+```
+
+## Upgrading
+
+Upgrades are managed inside the **AppFlight mobile app**:
+
+1. Open AppFlight
+2. Go to **Settings → Subscription**
+3. Tap **Upgrade to First Class**
+
+After upgrading, the new limits apply immediately on the next upload — no CLI update or re-login required.
+
+## Exit code reference
+
+| Code | Trigger |
+|------|---------|
+| `8` | APK limit reached (`PLAN_LIMIT` from backend) |
+
+See the full exit code table on the [upload command page](/commands/upload).

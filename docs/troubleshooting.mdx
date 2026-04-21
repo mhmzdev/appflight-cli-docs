@@ -5,6 +5,30 @@ description: Common errors and how to fix them.
 
 ## Upload errors
 
+### APK limit reached (plan limit)
+
+```
+✗ Upload blocked — you've reached your APK limit for this app.
+✗ Free plan: 5 APKs per app. Upgrade in the AppFlight mobile app.
+✗ Settings → Subscription → Upgrade to First Class
+```
+
+**Exit code:** `8`
+
+**Cause:** Your account has hit the APK-per-app limit for your current plan. The Economy (free) plan allows 5 APKs per app. Older builds are preserved, but no new ones can be added until you upgrade or delete existing builds.
+
+**Fix:**
+- **Upgrade:** Open the AppFlight mobile app → **Settings → Subscription → Upgrade to First Class**
+- **Check your plan:** Run `appflight whoami` — the `plan:` field shows your current tier
+
+Run with `--verbose` to see the full server response for more detail:
+
+```bash
+appflight upload --flavor stage --verbose
+```
+
+---
+
 ### Version already exists
 
 ```

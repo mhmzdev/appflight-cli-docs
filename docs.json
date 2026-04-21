@@ -17,6 +17,7 @@
       "group": "Getting Started",
       "pages": [
         { "title": "🚀 Overview", "href": "/" },
+        { "title": "📱 Get the App", "href": "/get-the-app" },
         { "title": "📦 Installation", "href": "/installation" },
         { "title": "⚡ Quick Start", "href": "/quick-start" }
       ]

@@ -21,17 +21,17 @@ on:
     branches: [main]
 
 jobs:
-  upload:
+  build_and_upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '3.38.2'   # pin your version — see note below
 
-      - name: Set up Dart
+      - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
       - name: Install AppFlight CLI
@@ -46,22 +46,39 @@ jobs:
         run: appflight_cli upload --flavor stage --ci
 ```
 
+:::tip Why pin the Flutter version?
+Using `flutter-version: '3.x'` resolves to whatever the latest stable is at build time, which can silently introduce breaking changes. Pin to the same version your team uses locally (e.g. `3.38.2`). Update the pin deliberately when you upgrade.
+:::
+
 ## Multi-flavor
 
 Repeat the build and upload steps per flavor:
 
 ```yaml
-      - name: Build stage
+      - name: Build stage APK
         run: flutter build apk --flavor stage --release
+
       - name: Upload stage
         env:
           APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
         run: appflight_cli upload --flavor stage --ci
 
-      - name: Build qa
+      - name: Build qa APK
         run: flutter build apk --flavor qa --release
+
       - name: Upload qa
         env:
           APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
         run: appflight_cli upload --flavor qa --ci
 ```
+
+## Exit codes
+
+If `appflight_cli upload` exits non-zero the workflow fails. Common codes:
+
+| Code | Meaning | Fix |
+|---|---|---|
+| 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
+| 5 | Version already uploaded | Bump `version` in `pubspec.yaml` before pushing |
+| 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
+| 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |

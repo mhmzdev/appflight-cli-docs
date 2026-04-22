@@ -6,7 +6,7 @@ description: Creates appflight.json in your Flutter project root. Run once per p
 Creates `appflight.json` in your Flutter project root. Run once per project.
 
 ```bash
-appflight_cli init [--flavors <definitions>] [--force]
+appflight init [--flavors <definitions>] [--force]
 ```
 
 ## Flags
@@ -19,7 +19,7 @@ appflight_cli init [--flavors <definitions>] [--force]
 ## Flavored app
 
 ```bash
-appflight_cli init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
+appflight init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
 ```
 
 Each entry is `flavorName:packageName`. The flavor name becomes the key in `appflight.json` and maps to the APK filename (e.g. `app-stage-release.apk`).
@@ -27,7 +27,7 @@ Each entry is `flavorName:packageName`. The flavor name becomes the key in `appf
 ## No-flavor app
 
 ```bash
-appflight_cli init
+appflight init
 ```
 
 Prompts for a single package name (applicationId).
@@ -62,4 +62,4 @@ Commit `appflight.json` — it's team-shared config.
 - `com.example.app` is not allowed
 - Each flavor must have a unique package name
 
-> **Note:** To re-run on an existing project: `appflight_cli init --flavors ... --force`
+> **Note:** To re-run on an existing project: `appflight init --flavors ... --force`

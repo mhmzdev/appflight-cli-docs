@@ -6,8 +6,8 @@ description: Automate AppFlight uploads from Codemagic CI/CD.
 ## Setup
 
 1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → **+** — label it `Codemagic`
-2. **Add environment variable** — Codemagic → Teams → Environment variables → add `APPFLIGHT_API_KEY` as secret
-3. **Commit `appflight.json`** to your repository
+2. **Add environment variable** — Codemagic → Teams → Environment variables → add `APPFLIGHT_API_KEY` as a secret
+3. **Commit `appflight.json`** to your repository (run `appflight init` locally first)
 
 ## codemagic.yaml
 
@@ -15,34 +15,80 @@ description: Automate AppFlight uploads from Codemagic CI/CD.
 workflows:
   android-release:
     name: Android Release
+    instance_type: mac_mini_m1
     environment:
-      vars:
-        APPFLIGHT_API_KEY: $APPFLIGHT_API_KEY
+      flutter: stable             # or pin: 3.38.2
+      java: 17
+      groups:
+        - appflight               # group containing APPFLIGHT_API_KEY
 
     scripts:
       - name: Install AppFlight CLI
-        script: dart pub global activate appflight_cli
+        script: |
+          dart pub global activate appflight_cli
+          echo 'export PATH="$PATH:$HOME/.pub-cache/bin"' >> $CM_ENV
+
+      - name: Flutter pub get
+        script: flutter pub get
 
       - name: Build APK
         script: flutter build apk --flavor stage --release
 
       - name: Upload to AppFlight
-        script: appflight_cli upload --flavor stage --ci
+        script: appflight upload --flavor stage --ci
 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
 ```
 
+:::warning PATH for the installed binary
+`dart pub global activate appflight_cli` installs the `appflight` binary into `$HOME/.pub-cache/bin`. Codemagic does not put that directory on PATH by default, so the next step fails with `appflight: command not found` unless you export it yourself. Writing to `$CM_ENV` persists the PATH change across subsequent script steps.
+:::
+
+:::tip Pin your Flutter version
+Set `flutter: 3.38.2` (or whatever your team uses) instead of `flutter: stable` to avoid silent breakages when Codemagic rolls to a newer stable.
+:::
+
 ## Multi-flavor
 
+Install the CLI once, then repeat build and upload per flavor:
+
 ```yaml
+    scripts:
+      - name: Install AppFlight CLI
+        script: |
+          dart pub global activate appflight_cli
+          echo 'export PATH="$PATH:$HOME/.pub-cache/bin"' >> $CM_ENV
+
       - name: Build and upload stage
         script: |
           flutter build apk --flavor stage --release
-          appflight_cli upload --flavor stage --ci
+          appflight upload --flavor stage --ci
 
       - name: Build and upload qa
         script: |
           flutter build apk --flavor qa --release
-          appflight_cli upload --flavor qa --ci
+          appflight upload --flavor qa --ci
 ```
+
+## Smaller, faster APKs for testing
+
+For tester-only distribution, an arm64-only APK is ~40% smaller and builds faster:
+
+```yaml
+      - name: Build APK
+        script: flutter build apk --flavor stage --release --target-platform android-arm64
+```
+
+Skip this for production Play Store builds.
+
+## Exit codes
+
+If `appflight upload` exits non-zero the Codemagic step fails. Common codes:
+
+| Code | Meaning | Fix |
+|---|---|---|
+| 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
+| 5 | Version already uploaded | Bump `version` in `pubspec.yaml` before pushing |
+| 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
+| 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |

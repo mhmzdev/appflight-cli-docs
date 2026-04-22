@@ -52,7 +52,7 @@ Map of flavor name → app entry. No-flavor projects have a single `"default"` e
 | `apkPath` | Relative path to the built APK from project root |
 
 ### `defaultFlavor`
-Used when `appflight_cli upload` is run without `--flavor`. Omitted for no-flavor projects.
+Used when `appflight upload` is run without `--flavor`. Omitted for no-flavor projects.
 
 ## No-flavor project
 
@@ -75,5 +75,5 @@ Used when `appflight_cli upload` is run without `--flavor`. Omitted for no-flavo
 `apkPath` is set automatically by `init`. If your build produces APKs elsewhere, edit it manually or use `--file` at upload time:
 
 ```bash
-appflight_cli upload --flavor stage --file path/to/custom.apk
+appflight upload --flavor stage --file path/to/custom.apk
 ```

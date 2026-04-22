@@ -6,7 +6,7 @@ description: Upload Android APKs to AppFlight directly from your terminal or CI 
 AppFlight CLI lets you upload Android APKs to AppFlight directly from your laptop or CI pipeline — no phone required.
 
 ```bash
-appflight_cli upload --flavor stage
+appflight upload --flavor stage
 ```
 
 ## Why CLI?
@@ -14,16 +14,16 @@ appflight_cli upload --flavor stage
 The AppFlight mobile app is great for managing testers and browsing builds, but real development happens on laptops and build servers. The CLI closes that loop:
 
 - Build on your machine → upload in one command
-- Wire into GitHub Actions, Codemagic, or Bitrise
+- Wire into GitHub Actions or Codemagic
 - No Firebase credentials or service account keys needed — just an API key
 
 ## How it works
 
 1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → tap **+**
 2. **Install the CLI** — `dart pub global activate appflight_cli`
-3. **Init your project** — `appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp`
-4. **Login** — `appflight_cli login` and paste your key
-5. **Build and upload** — `flutter build apk --flavor stage --release && appflight_cli upload --flavor stage`
+3. **Init your project** — `appflight init --flavors stage:com.myapp.stage,prod:com.myapp`
+4. **Login** — `appflight login` and paste your key
+5. **Build and upload** — `flutter build apk --flavor stage --release && appflight upload --flavor stage`
 
 ## Commands
 

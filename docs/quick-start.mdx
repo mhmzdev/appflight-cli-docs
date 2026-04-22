@@ -20,7 +20,7 @@ dart pub global activate appflight_cli
 ## 3. Login
 
 ```bash
-appflight_cli login
+appflight login
 ```
 
 Paste your API key when prompted. Credentials are saved to `~/.appflight/credentials.json`.
@@ -32,7 +32,7 @@ Run from your Flutter project root.
 **Flavored app:**
 
 ```bash
-appflight_cli init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
+appflight init --flavors stage:com.myapp.stage,qa:com.myapp.qa,prod:com.myapp
 ```
 
 The format is `flavorName:packageName` per flavor, comma-separated.
@@ -40,7 +40,7 @@ The format is `flavorName:packageName` per flavor, comma-separated.
 **No-flavor app:**
 
 ```bash
-appflight_cli init
+appflight init
 ```
 
 You'll be prompted for the package name (applicationId).
@@ -51,7 +51,7 @@ This creates `appflight.json` in your project root. Commit it — it's shared wi
 
 ```bash
 flutter build apk --flavor stage --release
-appflight_cli upload --flavor stage
+appflight upload --flavor stage
 ```
 
 Your testers will be notified automatically.

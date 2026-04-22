@@ -41,7 +41,7 @@ appflight upload --flavor stage --verbose
 **Fix:** Bump the version in `pubspec.yaml` and rebuild, or override at upload time:
 
 ```bash
-appflight_cli upload --flavor stage --version 1.0.1
+appflight upload --flavor stage --version 1.0.1
 ```
 
 ---
@@ -88,7 +88,7 @@ appflight_cli upload --flavor stage --version 1.0.1
 flutter build apk --flavor stage --release
 
 # Or point directly at your APK
-appflight_cli upload --flavor stage --file path/to/app.apk
+appflight upload --flavor stage --file path/to/app.apk
 ```
 
 If your APK filename doesn't follow the standard Flutter pattern, edit `apkPath` in `appflight.json` manually.
@@ -127,14 +127,14 @@ The `--flavors` flag uses a flavor name to derive the APK path. If your Flutter 
 ### Not logged in
 
 ```
-✗ Not logged in. Run `appflight_cli login` or set APPFLIGHT_API_KEY.
+✗ Not logged in. Run `appflight login` or set APPFLIGHT_API_KEY.
 ```
 
 **Fix:**
 
 ```bash
 # Interactive login
-appflight_cli login
+appflight login
 
 # Or set env var (CI/CD)
 export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
@@ -153,7 +153,7 @@ export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
 **Fix:**
 1. Go to **AppFlight app → Settings → API Keys**
 2. Check if the key is still active (not revoked)
-3. Generate a new key if needed, then run `appflight_cli login` again
+3. Generate a new key if needed, then run `appflight login` again
 
 ---
 
@@ -179,10 +179,10 @@ export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
 
 ```bash
 # Wrong — shell splits on the space, second package is dropped silently
-appflight_cli init --flavors stage:com.myapp.stage, prod:com.myapp
+appflight init --flavors stage:com.myapp.stage, prod:com.myapp
 
 # Correct — no spaces
-appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp
+appflight init --flavors stage:com.myapp.stage,prod:com.myapp
 ```
 
 ---
@@ -196,11 +196,11 @@ appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp
 **Fix:**
 
 ```bash
-appflight_cli init --flavors stage:com.myapp.stage,prod:com.myapp --force
+appflight init --flavors stage:com.myapp.stage,prod:com.myapp --force
 ```
 
 ---
 
 ## Still stuck?
 
-Run with `--verbose` for detailed output, or check `appflight_cli --help` for all available flags.
+Run with `--verbose` for detailed output, or check `appflight --help` for all available flags.

@@ -17,7 +17,9 @@ dart --version
 dart pub global activate appflight_cli
 ```
 
-> **Note:** If `appflight_cli` is not found after installation, add the Dart pub cache bin to your PATH:
+The binary installed on your PATH is `appflight` (not `appflight_cli` — the package name on pub.dev is `appflight_cli`, the executable it installs is `appflight`).
+
+> **Note:** If `appflight` is not found after installation, add the Dart pub cache bin to your PATH:
 >
 > ```bash
 > # Add to ~/.zshrc or ~/.bashrc
@@ -37,7 +39,7 @@ Re-run the same command after pulling updates.
 ## Verify
 
 ```bash
-appflight_cli --help
+appflight --help
 ```
 
 ## Uninstall

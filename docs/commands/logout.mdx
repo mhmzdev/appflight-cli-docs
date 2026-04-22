@@ -6,7 +6,7 @@ description: Removes saved credentials from the local machine.
 Removes saved credentials from the local machine.
 
 ```bash
-appflight_cli logout
+appflight logout
 ```
 
 > **Note:** `logout` only deletes `~/.appflight/credentials.json`. The API key itself remains active on AppFlight. To fully revoke it, go to **AppFlight app → Settings → API Keys** and swipe to revoke.
@@ -16,7 +16,7 @@ appflight_cli logout
 Subsequent `upload` or `whoami` commands will fail with:
 
 ```
-✗ Not logged in. Run `appflight_cli login` or set APPFLIGHT_API_KEY.
+✗ Not logged in. Run `appflight login` or set APPFLIGHT_API_KEY.
 ```
 
-Run `appflight_cli login` to authenticate again.
+Run `appflight login` to authenticate again.

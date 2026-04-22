@@ -44,8 +44,7 @@
       "group": "CI / CD",
       "pages": [
         { "title": "🐙 GitHub Actions", "href": "/ci/github-actions" },
-        { "title": "✨ Codemagic", "href": "/ci/codemagic" },
-        { "title": "🔧 Bitrise", "href": "/ci/bitrise" }
+        { "title": "✨ Codemagic", "href": "/ci/codemagic" }
       ]
     },
     {

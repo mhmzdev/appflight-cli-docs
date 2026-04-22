@@ -6,7 +6,7 @@ description: Uploads a built APK to AppFlight. This is the primary command.
 Uploads a built APK to AppFlight. This is the primary command.
 
 ```bash
-appflight_cli upload [--flavor <name>] [options]
+appflight upload [--flavor <name>] [options]
 ```
 
 ## Flags
@@ -25,26 +25,26 @@ appflight_cli upload [--flavor <name>] [options]
 **Flavored app** — `--flavor` is required:
 
 ```bash
-appflight_cli upload --flavor stage
-appflight_cli upload --flavor prod
+appflight upload --flavor stage
+appflight upload --flavor prod
 ```
 
 **No-flavor app:**
 
 ```bash
-appflight_cli upload
+appflight upload
 ```
 
 **Dry run first:**
 
 ```bash
-appflight_cli upload --flavor stage --dry-run
+appflight upload --flavor stage --dry-run
 ```
 
 **CI mode:**
 
 ```bash
-appflight_cli upload --flavor stage --ci
+appflight upload --flavor stage --ci
 ```
 
 Also auto-detected when the `CI` environment variable is set.
@@ -60,8 +60,8 @@ version: 1.2.3+45   # → version "1.2.3", build number "45"
 Override with flags:
 
 ```bash
-appflight_cli upload --flavor stage --version 1.2.3
-appflight_cli upload --flavor stage --build-number 99
+appflight upload --flavor stage --version 1.2.3
+appflight upload --flavor stage --build-number 99
 ```
 
 ## Exit codes

@@ -7,7 +7,7 @@ description: Automate AppFlight uploads on every push using GitHub Actions.
 
 1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → **+** — label it `GitHub Actions`
 2. **Add secret** — GitHub repo → Settings → Secrets and variables → Actions → New repository secret → `APPFLIGHT_API_KEY`
-3. **Commit `appflight.json`** to your repository (run `appflight_cli init` locally first)
+3. **Commit `appflight.json`** to your repository (run `appflight init` locally first)
 
 ## Workflow
 
@@ -26,16 +26,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.38.2'   # pin your version — see note below
+          cache: true
 
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
       - name: Install AppFlight CLI
-        run: dart pub global activate appflight_cli
+        run: |
+          dart pub global activate appflight_cli
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
       - name: Build APK
         run: flutter build apk --flavor stage --release
@@ -43,25 +52,38 @@ jobs:
       - name: Upload to AppFlight
         env:
           APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight_cli upload --flavor stage --ci
+        run: appflight upload --flavor stage --ci
 ```
 
 :::tip Why pin the Flutter version?
 Using `flutter-version: '3.x'` resolves to whatever the latest stable is at build time, which can silently introduce breaking changes. Pin to the same version your team uses locally (e.g. `3.38.2`). Update the pin deliberately when you upgrade.
 :::
 
+:::warning PATH for the installed binary
+`dart pub global activate appflight_cli` installs the `appflight` binary into `$HOME/.pub-cache/bin`, which is **not** on the runner's PATH by default. The `echo ... >> $GITHUB_PATH` line above adds it for every subsequent step. Without it, the next step fails with `appflight: command not found`.
+:::
+
+:::info Java is required for `flutter build apk`
+The `actions/setup-java@v4` step is required even though you're not writing Java — the Android Gradle Plugin runs on the JDK. Match the JDK your local Android Studio uses (17 is the current default).
+:::
+
 ## Multi-flavor
 
-Repeat the build and upload steps per flavor:
+Install the CLI once, then repeat the build and upload steps per flavor:
 
 ```yaml
+      - name: Install AppFlight CLI
+        run: |
+          dart pub global activate appflight_cli
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
       - name: Build stage APK
         run: flutter build apk --flavor stage --release
 
       - name: Upload stage
         env:
           APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight_cli upload --flavor stage --ci
+        run: appflight upload --flavor stage --ci
 
       - name: Build qa APK
         run: flutter build apk --flavor qa --release
@@ -69,12 +91,47 @@ Repeat the build and upload steps per flavor:
       - name: Upload qa
         env:
           APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight_cli upload --flavor qa --ci
+        run: appflight upload --flavor qa --ci
 ```
+
+## Faster builds
+
+On ephemeral runners, pub and Gradle caches are cold on every run. Two optional caching steps usually cut ~1–2 minutes:
+
+```yaml
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties', 'android/app/build.gradle.kts') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+```
+
+Place both **after** `Setup Flutter` and **before** `Install AppFlight CLI`.
+
+## Smaller, faster APKs for testing
+
+For CI builds that only need to land on testers' devices (not the Play Store), an `arm64-only` APK is ~40% smaller and builds faster:
+
+```yaml
+      - name: Build APK
+        run: flutter build apk --flavor stage --release --target-platform android-arm64
+```
+
+Skip this for production Play Store builds — Play requires a universal AAB or the full set of ABIs.
 
 ## Exit codes
 
-If `appflight_cli upload` exits non-zero the workflow fails. Common codes:
+If `appflight upload` exits non-zero the workflow fails. Common codes:
 
 | Code | Meaning | Fix |
 |---|---|---|

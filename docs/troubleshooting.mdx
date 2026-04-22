@@ -157,20 +157,6 @@ export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
 
 ---
 
-### Seeing `uid: bypass` on `whoami`
-
-**Cause:** The CLI is still hitting the local Firebase emulator instead of stage. This happens when `APPFLIGHT_ENV=local` or `APPFLIGHT_BASE_URL` is set in your shell.
-
-**Fix:**
-
-```bash
-unset APPFLIGHT_ENV
-unset APPFLIGHT_BASE_URL
-appflight_cli whoami
-```
-
----
-
 ## Init errors
 
 ### Invalid package name format

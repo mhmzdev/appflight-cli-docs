@@ -81,12 +81,14 @@ appflight upload --flavor stage --build-number 99
 
 AppFlight enforces per-app APK limits based on your subscription:
 
-| Plan | APK limit per app |
-|------|-------------------|
-| Economy (free) | 5 APKs |
-| First Class | 10–15 APKs |
+| Plan | APK limit per app | On limit hit |
+|------|-------------------|--------------|
+| Economy (free) | 5 (individual) · 10 (org) | Upload blocked — CLI exits `8` |
+| First Class | 15 (individual) · 20 (org) | **Rollover** — oldest build auto-rotates, upload succeeds |
 
-When the limit is reached the upload is blocked and the CLI exits with code `8`:
+### Economy — blocked at cap
+
+When a free-tier user hits the cap, the upload is blocked and the CLI exits with code `8`:
 
 ```
 ✗ Upload blocked — you've reached your APK limit for this app.
@@ -99,6 +101,17 @@ Run with `--verbose` to see the full server response:
 ```bash
 appflight upload --flavor stage --verbose
 ```
+
+### First Class — rollover at cap
+
+When a pro user is at the APK cap, the new build is registered and the oldest existing build is auto-removed (FIFO by upload time). The upload succeeds (exit code `0`) and the CLI prints:
+
+```
+✓ v1.2.3 of com.your.app uploaded successfully.
+Rolled over oldest build (v1.0.0) to stay at your plan cap.
+```
+
+Version uniqueness is still enforced — rollover never bypasses the duplicate-version check (exit code `5`). Rollover runs best-effort on the underlying storage blob: if the Storage delete fails, the Firestore record is still updated and a weekly sweep cleans up any orphans.
 
 ## How it works internally
 

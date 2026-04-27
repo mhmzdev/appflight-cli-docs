@@ -10,8 +10,9 @@ AppFlight has two subscription tiers. Limits are enforced server-side — the CL
 | Feature | Economy (free) | First Class |
 |---------|---------------|-------------|
 | Apps | 3 | 5 (individual) · 10 (org) |
-| APKs per app | 5 (individual) · 10 (org) | 10 (individual) · 15 (org) |
-| Build TTL | 14 days | 14 days |
+| APKs per app | 5 (individual) · 10 (org) | 15 (individual) · 20 (org) |
+| Build TTL | 7 days | 14 days |
+| Rollover uploads at cap | — | ✓ (oldest build auto-rotates) |
 | CLI upload | ✓ | ✓ |
 | Tester push notifications | ✓ | ✓ |
 
@@ -19,7 +20,9 @@ AppFlight has two subscription tiers. Limits are enforced server-side — the CL
 
 Limits are checked by the AppFlight backend on every upload attempt. The CLI never hard-codes limits — it reads the error response from the server, so any future limit changes apply automatically without a CLI update.
 
-When a limit is exceeded the server returns `HTTP 403` with `code: "PLAN_LIMIT"` and the CLI exits with code `8`.
+**Economy** — when the APK cap is exceeded the server returns `HTTP 403` with `code: "PLAN_LIMIT"` and the CLI exits with code `8`.
+
+**First Class** — at-cap uploads succeed and trigger a rollover: the new build is registered, the oldest existing build is dropped, and the CLI prints a one-line rollover notice. See [upload → First Class rollover](/commands/upload#first-class--rollover-at-cap).
 
 ## Checking your plan
 

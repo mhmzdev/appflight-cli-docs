@@ -1,0 +1,55 @@
+---
+title: analytics
+description: Manage anonymous usage analytics opt-in for the AppFlight CLI.
+---
+
+Manage whether the CLI sends anonymous usage data to help improve AppFlight.
+
+```bash
+appflight analytics <subcommand>
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| `enable` | Opt in to anonymous analytics |
+| `disable` | Opt out at any time |
+| `status` | Show your current opt-in status |
+
+## Usage
+
+```bash
+appflight analytics enable
+appflight analytics disable
+appflight analytics status
+```
+
+## First-run prompt
+
+The first time you run any `appflight` command in an interactive terminal, you'll see a one-time prompt:
+
+```
+Help improve AppFlight by sharing anonymous usage data? (y/n):
+```
+
+Your answer is saved to `~/.appflight/analytics.json`. You can change it at any time with `enable` or `disable`.
+
+## What is collected
+
+All data is anonymous. No personally identifiable information is ever sent.
+
+| Collected | Not collected |
+|---|---|
+| Which commands are run (`upload`, `init`, `whoami`) | Your API key or user identity |
+| Upload success / failure (with error category) | Package names or APK content |
+| CLI version | File paths or project names |
+| Flavor name (`stage`, `qa`, `prod`) if used | IP address (GA4 anonymises this by default) |
+
+## CI environments
+
+The consent prompt and analytics are **always skipped** in CI. The `CI` environment variable being set (standard in GitHub Actions, Codemagic, Bitrise, CircleCI, etc.) disables the prompt and suppresses all analytics — no configuration needed.
+
+## Where data goes
+
+Events are sent to a Google Analytics 4 property owned by AppFlight using the GA4 Measurement Protocol. Data is used to understand CLI adoption, upload success rates, and plan limit pressure — no third parties receive it.

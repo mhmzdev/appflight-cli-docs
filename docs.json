@@ -29,7 +29,8 @@
         { "title": "🔑 login", "href": "/commands/login" },
         { "title": "☁️ upload", "href": "/commands/upload" },
         { "title": "👤 whoami", "href": "/commands/whoami" },
-        { "title": "🚪 logout", "href": "/commands/logout" }
+        { "title": "🚪 logout", "href": "/commands/logout" },
+        { "title": "📊 analytics", "href": "/commands/analytics" }
       ]
     },
     {

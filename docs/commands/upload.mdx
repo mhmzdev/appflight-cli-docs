@@ -15,8 +15,8 @@ appflight upload [--flavor <name>] [options]
 |------|-------------|
 | `--flavor`, `-f` | Flavor to upload. **Required** when the project has multiple flavors configured. |
 | `--file` | Path to the APK. Overrides `apkPath` from `appflight.json`. |
-| `--version` | Version string. Overrides `pubspec.yaml`. |
-| `--build-number` | Build number. Overrides the `+buildNumber` from `pubspec.yaml`. |
+| `--version` | Version string. Overrides the version read from your project files. |
+| `--build-number` | Build number. Overrides the build number from your project files. |
 | `--dry-run` | Print what would be uploaded without actually uploading. |
 | `--ci` | CI mode: prefix log lines with `[appflight]`, disable progress bar. |
 
@@ -51,18 +51,41 @@ Also auto-detected when the `CI` environment variable is set.
 
 ## Version resolution
 
-Version is read from `pubspec.yaml` by default:
+<Tabs groupId="framework">
+  <TabItem label="Flutter" value="flutter">
 
-```yaml
-version: 1.2.3+45   # → version "1.2.3", build number "45"
-```
+    Version is read from `pubspec.yaml` by default:
 
-Override with flags:
+    ```yaml
+    version: 1.2.3+45   # → version "1.2.3", build number "45"
+    ```
 
-```bash
-appflight upload --flavor stage --version 1.2.3
-appflight upload --flavor stage --build-number 99
-```
+    Override with flags:
+
+    ```bash
+    appflight upload --flavor stage --version 1.2.3
+    appflight upload --flavor stage --build-number 99
+    ```
+
+  </TabItem>
+  <TabItem label="React Native" value="react-native">
+
+    Version is read from `android/app/build.gradle` by default:
+
+    ```groovy
+    versionName "1.2.3"
+    versionCode 45      // → version "1.2.3+45"
+    ```
+
+    The CLI parses both fields and combines them as `versionName+versionCode`. Override with flags:
+
+    ```bash
+    appflight upload --flavor stage --version 1.2.3
+    appflight upload --flavor stage --build-number 99
+    ```
+
+  </TabItem>
+</Tabs>
 
 ## Exit codes
 

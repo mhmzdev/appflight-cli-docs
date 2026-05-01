@@ -13,90 +13,180 @@ description: Automate AppFlight uploads on every push using GitHub Actions.
 
 Create `.github/workflows/appflight.yml`:
 
-```yaml
-name: Upload to AppFlight
+<Tabs groupId="framework">
+  <TabItem label="Flutter" value="flutter">
 
-on:
-  push:
-    branches: [main]
+    ```yaml
+    name: Upload to AppFlight
 
-jobs:
-  build_and_upload:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    on:
+      push:
+        branches: [main]
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+    jobs:
+      build_and_upload:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.38.2'   # pin your version — see note below
-          cache: true
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+              distribution: 'zulu'
+              java-version: '17'
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
+          - name: Setup Flutter
+            uses: subosito/flutter-action@v2
+            with:
+              flutter-version: '3.38.2'   # pin your version — see note below
+              cache: true
 
-      - name: Install AppFlight CLI
-        run: |
-          dart pub global activate appflight_cli
-          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          - name: Setup Dart
+            uses: dart-lang/setup-dart@v1
 
-      - name: Build APK
-        run: flutter build apk --flavor stage --release
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: Upload to AppFlight
-        env:
-          APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight upload --flavor stage --ci
-```
+          - name: Build APK
+            run: flutter build apk --flavor stage --release
 
-:::tip Why pin the Flutter version?
-Using `flutter-version: '3.x'` resolves to whatever the latest stable is at build time, which can silently introduce breaking changes. Pin to the same version your team uses locally (e.g. `3.38.2`). Update the pin deliberately when you upgrade.
-:::
+          - name: Upload to AppFlight
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
+    ```
+
+    :::tip Why pin the Flutter version?
+    Using `flutter-version: '3.x'` resolves to whatever the latest stable is at build time, which can silently introduce breaking changes. Pin to the same version your team uses locally (e.g. `3.38.2`). Update the pin deliberately when you upgrade.
+    :::
+
+  </TabItem>
+  <TabItem label="React Native" value="react-native">
+
+    ```yaml
+    name: Upload to AppFlight
+
+    on:
+      push:
+        branches: [main]
+
+    jobs:
+      build_and_upload:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+              distribution: 'zulu'
+              java-version: '17'
+
+          - name: Setup Node
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'npm'
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Setup Dart
+            uses: dart-lang/setup-dart@v1
+
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+          - name: Build APK
+            run: cd android && ./gradlew assembleStageRelease
+
+          - name: Upload to AppFlight
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
+    ```
+
+    :::tip Using Yarn?
+    Replace `cache: 'npm'` with `cache: 'yarn'` and `npm install` with `yarn install`.
+    :::
+
+  </TabItem>
+</Tabs>
 
 :::warning PATH for the installed binary
 `dart pub global activate appflight_cli` installs the `appflight` binary into `$HOME/.pub-cache/bin`, which is **not** on the runner's PATH by default. The `echo ... >> $GITHUB_PATH` line above adds it for every subsequent step. Without it, the next step fails with `appflight: command not found`.
 :::
 
-:::info Java is required for `flutter build apk`
-The `actions/setup-java@v4` step is required even though you're not writing Java — the Android Gradle Plugin runs on the JDK. Match the JDK your local Android Studio uses (17 is the current default).
+:::info Java is required for the Android build
+`actions/setup-java@v4` is required for both Flutter and React Native — the Android Gradle Plugin runs on the JDK. Match the JDK your local Android Studio uses (17 is the current default).
 :::
 
 ## Multi-flavor
 
 Install the CLI once, then repeat the build and upload steps per flavor:
 
-```yaml
-      - name: Install AppFlight CLI
-        run: |
-          dart pub global activate appflight_cli
-          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+<Tabs groupId="framework">
+  <TabItem label="Flutter" value="flutter">
 
-      - name: Build stage APK
-        run: flutter build apk --flavor stage --release
+    ```yaml
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: Upload stage
-        env:
-          APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight upload --flavor stage --ci
+          - name: Build stage APK
+            run: flutter build apk --flavor stage --release
 
-      - name: Build qa APK
-        run: flutter build apk --flavor qa --release
+          - name: Upload stage
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
 
-      - name: Upload qa
-        env:
-          APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
-        run: appflight upload --flavor qa --ci
-```
+          - name: Build qa APK
+            run: flutter build apk --flavor qa --release
+
+          - name: Upload qa
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor qa --ci
+    ```
+
+  </TabItem>
+  <TabItem label="React Native" value="react-native">
+
+    ```yaml
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+          - name: Build stage APK
+            run: cd android && ./gradlew assembleStageRelease
+
+          - name: Upload stage
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
+
+          - name: Build qa APK
+            run: cd android && ./gradlew assembleQaRelease
+
+          - name: Upload qa
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor qa --ci
+    ```
+
+  </TabItem>
+</Tabs>
 
 ## Faster builds
 
-On ephemeral runners, pub and Gradle caches are cold on every run. Two optional caching steps usually cut ~1–2 minutes:
+On ephemeral runners, Gradle caches are cold on every run. This optional step usually cuts ~1–2 minutes:
 
 ```yaml
       - name: Cache Gradle
@@ -107,7 +197,11 @@ On ephemeral runners, pub and Gradle caches are cold on every run. Two optional 
             ~/.gradle/wrapper
           key: gradle-${{ runner.os }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties', 'android/app/build.gradle.kts') }}
           restore-keys: gradle-${{ runner.os }}-
+```
 
+For Flutter projects, also cache pub packages:
+
+```yaml
       - name: Cache pub packages
         uses: actions/cache@v4
         with:
@@ -116,9 +210,9 @@ On ephemeral runners, pub and Gradle caches are cold on every run. Two optional 
           restore-keys: pub-${{ runner.os }}-
 ```
 
-Place both **after** `Setup Flutter` and **before** `Install AppFlight CLI`.
+Place both **after** your SDK setup step and **before** `Install AppFlight CLI`.
 
-## Smaller, faster APKs for testing
+## Smaller, faster APKs for testing (Flutter)
 
 For CI builds that only need to land on testers' devices (not the Play Store), an `arm64-only` APK is ~40% smaller and builds faster:
 
@@ -136,6 +230,6 @@ If `appflight upload` exits non-zero the workflow fails. Common codes:
 | Code | Meaning | Fix |
 |---|---|---|
 | 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
-| 5 | Version already uploaded | Bump `version` in `pubspec.yaml` before pushing |
+| 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter) or `android/app/build.gradle` (React Native) |
 | 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
 | 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |

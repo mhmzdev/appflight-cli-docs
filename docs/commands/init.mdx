@@ -1,18 +1,19 @@
 ---
 title: init
-description: Creates appflight.json in your Flutter project root. Run once per project.
+description: Creates appflight.json in your project root. Run once per project.
 ---
 
-Creates `appflight.json` in your Flutter project root. Run once per project.
+Creates `appflight.json` in your project root. Run once per project.
 
 ```bash
-appflight init [--flavors <definitions>] [--force]
+appflight init [--project-type <framework>] [--flavors <definitions>] [--force]
 ```
 
 ## Flags
 
 | Flag | Description |
 |------|-------------|
+| `--project-type` | `flutter` or `react-native`. Skips the interactive framework prompt. |
 | `--flavors` | Comma-separated flavor definitions in `name:packageName` format |
 | `--force`, `-f` | Overwrite an existing `appflight.json` |
 
@@ -30,35 +31,64 @@ Each entry is `flavorName:packageName`. The flavor name becomes the key in `appf
 appflight init
 ```
 
-Prompts for a single package name (applicationId).
+Prompts for framework choice, then a single package name (applicationId).
 
 ## Output
 
-```json
-{
-  "version": 1,
-  "projectType": "flutter",
-  "apps": {
-    "stage": {
-      "appflightAppId": "com.myapp.stage",
-      "packageName": "com.myapp.stage",
-      "apkPath": "build/app/outputs/flutter-apk/app-stage-release.apk"
-    },
-    "prod": {
-      "appflightAppId": "com.myapp",
-      "packageName": "com.myapp",
-      "apkPath": "build/app/outputs/flutter-apk/app-prod-release.apk"
+<Tabs groupId="framework">
+  <TabItem label="Flutter" value="flutter">
+
+    ```json
+    {
+      "version": 1,
+      "projectType": "flutter",
+      "apps": {
+        "stage": {
+          "appflightAppId": "com.myapp.stage",
+          "packageName": "com.myapp.stage",
+          "apkPath": "build/app/outputs/flutter-apk/app-stage-release.apk"
+        },
+        "prod": {
+          "appflightAppId": "com.myapp",
+          "packageName": "com.myapp",
+          "apkPath": "build/app/outputs/flutter-apk/app-prod-release.apk"
+        }
+      },
+      "defaultFlavor": "stage"
     }
-  },
-  "defaultFlavor": "stage"
-}
-```
+    ```
+
+  </TabItem>
+  <TabItem label="React Native" value="react-native">
+
+    ```json
+    {
+      "version": 1,
+      "projectType": "react-native",
+      "apps": {
+        "stage": {
+          "appflightAppId": "com.myapp.stage",
+          "packageName": "com.myapp.stage",
+          "apkPath": "android/app/build/outputs/apk/stage/release/app-stage-release.apk"
+        },
+        "prod": {
+          "appflightAppId": "com.myapp",
+          "packageName": "com.myapp",
+          "apkPath": "android/app/build/outputs/apk/prod/release/app-prod-release.apk"
+        }
+      },
+      "defaultFlavor": "stage"
+    }
+    ```
+
+  </TabItem>
+</Tabs>
 
 Commit `appflight.json` — it's team-shared config.
 
 ## Package name validation
 
-- Must be lowercase, dot-separated, at least 3 segments (e.g. `com.mycompany.myapp`)
+- Must be lowercase, dot-separated, at least 2 segments (e.g. `com.myapp` or `com.mycompany.myapp`)
 - `com.example.app` is not allowed
 - Each flavor must have a unique package name
 

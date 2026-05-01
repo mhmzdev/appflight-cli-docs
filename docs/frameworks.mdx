@@ -1,20 +1,17 @@
 ---
 title: Supported Frameworks
-description: AppFlight CLI works with Flutter today, with React Native support on the way.
+description: AppFlight CLI supports Flutter and React Native bare workflow.
 ---
 
-AppFlight CLI is designed around cross-platform mobile development. Current and planned framework support:
+AppFlight CLI works with both Flutter and React Native (bare workflow). The backend, storage, and tester distribution are framework-agnostic — the CLI adapts to your project structure based on `projectType` in `appflight.json`.
 
 ## Flutter
 
 **Fully supported.**
 
-The CLI is Flutter-first — every command, flag, and guide is built around Flutter project conventions.
-
-- `appflight.json` maps flavor names to Android package names and APK paths
-- APK paths follow the standard Flutter build output: `build/app/outputs/flutter-apk/app-<flavor>-release.apk`
-- Version and build number read directly from `pubspec.yaml`
-- Works with any flavor setup: single-flavor, multi-flavor, or no flavor
+- Version and build number read from `pubspec.yaml`
+- APK paths follow standard Flutter build output: `build/app/outputs/flutter-apk/app-<flavor>-release.apk`
+- Works with single-flavor, multi-flavor, or no-flavor setups
 
 ```bash
 # Flavored Flutter app
@@ -28,8 +25,35 @@ appflight upload
 
 ## React Native
 
-**Coming soon.**
+**Fully supported** (bare workflow only — Expo is not supported).
 
-React Native support is planned. APK upload and tester distribution will work with standard React Native Android build outputs.
+- Version read from `android/app/build.gradle` (`versionName+versionCode`)
+- APK paths follow standard Gradle output: `android/app/build/outputs/apk/<flavor>/release/app-<flavor>-release.apk`
+- Works with single-variant and multi-flavor setups
 
-When available, `appflight.json` will support a `"projectType": "react-native"` entry with paths to your Gradle-produced APKs.
+```bash
+# Flavored React Native app
+appflight init --flavors stage:com.myapp.stage,prod:com.myapp
+appflight upload --flavor stage
+
+# No-flavor React Native app
+appflight init
+appflight upload
+```
+
+During `appflight init` you'll be prompted to choose your framework, or skip the prompt with:
+
+```bash
+appflight init --project-type react-native
+```
+
+### What the CLI reads from Gradle
+
+The CLI parses `android/app/build.gradle` directly — no Gradle execution required.
+
+| Field | Source |
+|---|---|
+| Version | `versionName` + `versionCode` → `1.2.0+7` |
+| APK path | `android/app/build/outputs/apk/…` |
+
+Override the resolved version at upload time with `--version` or `--build-number`.

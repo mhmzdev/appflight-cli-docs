@@ -27,7 +27,12 @@ Paste your API key when prompted. Credentials are saved to `~/.appflight/credent
 
 ## 4. Init your project
 
-Run from your Flutter project root.
+Run from your project root. The CLI will ask which framework you're using — or skip the prompt:
+
+```bash
+appflight init --project-type flutter
+appflight init --project-type react-native
+```
 
 **Flavored app:**
 
@@ -49,10 +54,24 @@ This creates `appflight.json` in your project root. Commit it — it's shared wi
 
 ## 5. Build and upload
 
-```bash
-flutter build apk --flavor stage --release
-appflight upload --flavor stage
-```
+<Tabs groupId="framework">
+  <TabItem label="Flutter" value="flutter">
+
+    ```bash
+    flutter build apk --flavor stage --release
+    appflight upload --flavor stage
+    ```
+
+  </TabItem>
+  <TabItem label="React Native" value="react-native">
+
+    ```bash
+    cd android && ./gradlew assembleStageRelease
+    appflight upload --flavor stage
+    ```
+
+  </TabItem>
+</Tabs>
 
 Your testers will be notified automatically.
 

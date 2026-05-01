@@ -51,41 +51,17 @@ Also auto-detected when the `CI` environment variable is set.
 
 ## Version resolution
 
-<Tabs groupId="framework">
-  <TabItem label="Flutter" value="flutter">
+The CLI reads the version automatically from your project files:
 
-    Version is read from `pubspec.yaml` by default:
+- **Flutter** — reads `version` from `pubspec.yaml` (e.g. `1.2.3+45`)
+- **React Native** — reads `versionName` + `versionCode` from `android/app/build.gradle` and combines them as `1.2.3+45`
 
-    ```yaml
-    version: 1.2.3+45   # → version "1.2.3", build number "45"
-    ```
+Override either at upload time:
 
-    Override with flags:
-
-    ```bash
-    appflight upload --flavor stage --version 1.2.3
-    appflight upload --flavor stage --build-number 99
-    ```
-
-  </TabItem>
-  <TabItem label="React Native" value="react-native">
-
-    Version is read from `android/app/build.gradle` by default:
-
-    ```groovy
-    versionName "1.2.3"
-    versionCode 45      // → version "1.2.3+45"
-    ```
-
-    The CLI parses both fields and combines them as `versionName+versionCode`. Override with flags:
-
-    ```bash
-    appflight upload --flavor stage --version 1.2.3
-    appflight upload --flavor stage --build-number 99
-    ```
-
-  </TabItem>
-</Tabs>
+```bash
+appflight upload --flavor stage --version 1.2.3
+appflight upload --flavor stage --build-number 99
+```
 
 ## Exit codes
 

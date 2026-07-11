@@ -115,6 +115,45 @@ Create `.github/workflows/appflight.yml`:
     :::
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```yaml
+    name: Upload to AppFlight
+
+    on:
+      push:
+        branches: [main]
+
+    jobs:
+      build_and_upload:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+              distribution: 'zulu'
+              java-version: '17'
+
+          - name: Setup Dart
+            uses: dart-lang/setup-dart@v1
+
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+          - name: Build APK
+            run: ./gradlew assembleStageRelease
+
+          - name: Upload to AppFlight
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
+    ```
+
+  </TabItem>
 </Tabs>
 
 :::warning PATH for the installed binary
@@ -122,7 +161,7 @@ Create `.github/workflows/appflight.yml`:
 :::
 
 :::info Java is required for the Android build
-`actions/setup-java@v4` is required for both Flutter and React Native — the Android Gradle Plugin runs on the JDK. Match the JDK your local Android Studio uses (17 is the current default).
+`actions/setup-java@v4` is required for Flutter, React Native, and Kotlin — the Android Gradle Plugin runs on the JDK. Match the JDK your local Android Studio uses (17 is the current default).
 :::
 
 ## Multi-flavor
@@ -182,6 +221,32 @@ Install the CLI once, then repeat the build and upload steps per flavor:
     ```
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```yaml
+          - name: Install AppFlight CLI
+            run: |
+              dart pub global activate appflight_cli
+              echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+          - name: Build stage APK
+            run: ./gradlew assembleStageRelease
+
+          - name: Upload stage
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor stage --ci
+
+          - name: Build qa APK
+            run: ./gradlew assembleQaRelease
+
+          - name: Upload qa
+            env:
+              APPFLIGHT_API_KEY: ${{ secrets.APPFLIGHT_API_KEY }}
+            run: appflight upload --flavor qa --ci
+    ```
+
+  </TabItem>
 </Tabs>
 
 ## Faster builds
@@ -230,6 +295,6 @@ If `appflight upload` exits non-zero the workflow fails. Common codes:
 | Code | Meaning | Fix |
 |---|---|---|
 | 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
-| 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter) or `android/app/build.gradle` (React Native) |
+| 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter), `android/app/build.gradle` (React Native), or `app/build.gradle` (Kotlin) |
 | 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
 | 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |

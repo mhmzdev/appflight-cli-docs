@@ -59,6 +59,15 @@ appflight upload --flavor stage --verbose
     ```
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    Bump `versionName` / `versionCode` in `app/build.gradle` and rebuild, or override:
+
+    ```bash
+    appflight upload --flavor stage --version 1.0.1
+    ```
+
+  </TabItem>
 </Tabs>
 
 ---
@@ -132,6 +141,26 @@ appflight upload --flavor stage --verbose
     If Gradle outputs to a different path, edit `apkPath` in `appflight.json` manually.
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```
+    ✗ APK not found at app/build/outputs/apk/stage/release/app-stage-release.apk
+    ✗ Did you forget to run `./gradlew assembleStageRelease`?
+    ```
+
+    **Fix:**
+
+    ```bash
+    # Build first
+    ./gradlew assembleStageRelease
+
+    # Or point directly at your APK
+    appflight upload --flavor stage --file path/to/app.apk
+    ```
+
+    If Gradle outputs to a different path, edit `apkPath` in `appflight.json` manually.
+
+  </TabItem>
 </Tabs>
 
 ---
@@ -159,6 +188,16 @@ The `--flavors` flag uses the flavor name to derive the APK path. If your build 
     "prod": {
       "packageName": "com.myapp",
       "apkPath": "android/app/build/outputs/apk/prod/release/app-prod-release.apk"
+    }
+    ```
+
+  </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```json
+    "prod": {
+      "packageName": "com.myapp",
+      "apkPath": "app/build/outputs/apk/prod/release/app-prod-release.apk"
     }
     ```
 

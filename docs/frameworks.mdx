@@ -1,9 +1,9 @@
 ---
 title: Supported Frameworks
-description: AppFlight CLI supports Flutter and React Native bare workflow.
+description: AppFlight CLI supports Flutter, React Native bare workflow, and native Android (Kotlin).
 ---
 
-AppFlight CLI works with both Flutter and React Native (bare workflow). The backend, storage, and tester distribution are framework-agnostic — the CLI adapts to your project structure based on `projectType` in `appflight.json`.
+AppFlight CLI works with Flutter, React Native (bare workflow), and native Android (Kotlin). The backend, storage, and tester distribution are framework-agnostic — the CLI adapts to your project structure based on `projectType` in `appflight.json`.
 
 ## Flutter
 
@@ -60,6 +60,39 @@ Override the resolved version at upload time with `--version` or `--build-number
 
 ## Kotlin
 
-**Coming soon.**
+**Fully supported** (native Android, no cross-platform layer).
 
-Native Android (Kotlin) support is on the roadmap. If you're building without a cross-platform layer and want to use AppFlight, [let us know](https://github.com/mhmzdev/appflight-cli-docs/issues) — it helps us prioritise.
+- Version read from `app/build.gradle` (`versionName+versionCode`) — no `android/` wrapper, Gradle files sit at the project root
+- APK paths follow standard Gradle output: `app/build/outputs/apk/<flavor>/release/app-<flavor>-release.apk`
+- Works with single-variant and multi-flavor setups
+
+```bash
+# Flavored native Android app
+appflight init --project-type kotlin --flavors stage:com.myapp.stage,prod:com.myapp
+appflight upload --flavor stage
+
+# No-flavor native Android app
+appflight init --project-type kotlin
+appflight upload
+```
+
+Build with Gradle from the project root — no `cd android` needed:
+
+```bash
+./gradlew assembleStageRelease
+```
+
+:::tip Release signing
+A fresh Android Studio project has no release `signingConfig` by default — `assembleRelease` then outputs `app-release-unsigned.apk`, which won't match the `apkPath` the CLI expects (`app-release.apk`). Add a `signingConfig` to your `release` build type (the debug keystore is fine for local testing) before running `appflight init`.
+:::
+
+### What the CLI reads from Gradle
+
+The CLI parses root `app/build.gradle` directly — no Gradle execution required.
+
+| Field | Source |
+|---|---|
+| Version | `versionName` + `versionCode` → `1.2.0+7` |
+| APK path | `app/build/outputs/apk/…` |
+
+Override the resolved version at upload time with `--version` or `--build-number`.

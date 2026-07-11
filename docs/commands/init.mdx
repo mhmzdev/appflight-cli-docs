@@ -13,7 +13,7 @@ appflight init [--project-type <framework>] [--flavors <definitions>] [--force]
 
 | Flag | Description |
 |------|-------------|
-| `--project-type` | `flutter` or `react-native`. Skips the interactive framework prompt. |
+| `--project-type` | `flutter`, `react-native`, or `kotlin`. Skips the interactive framework prompt. |
 | `--flavors` | Comma-separated flavor definitions in `name:packageName` format |
 | `--force`, `-f` | Overwrite an existing `appflight.json` |
 
@@ -75,6 +75,29 @@ Prompts for framework choice, then a single package name (applicationId).
           "appflightAppId": "com.myapp",
           "packageName": "com.myapp",
           "apkPath": "android/app/build/outputs/apk/prod/release/app-prod-release.apk"
+        }
+      },
+      "defaultFlavor": "stage"
+    }
+    ```
+
+  </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```json
+    {
+      "version": 1,
+      "projectType": "kotlin",
+      "apps": {
+        "stage": {
+          "appflightAppId": "com.myapp.stage",
+          "packageName": "com.myapp.stage",
+          "apkPath": "app/build/outputs/apk/stage/release/app-stage-release.apk"
+        },
+        "prod": {
+          "appflightAppId": "com.myapp",
+          "packageName": "com.myapp",
+          "apkPath": "app/build/outputs/apk/prod/release/app-prod-release.apk"
         }
       },
       "defaultFlavor": "stage"

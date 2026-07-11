@@ -86,6 +86,35 @@ description: Automate AppFlight uploads from Codemagic CI/CD.
     :::
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```yaml
+    workflows:
+      android-release:
+        name: Android Release
+        instance_type: mac_mini_m1
+        environment:
+          java: 17
+          groups:
+            - appflight               # group containing APPFLIGHT_API_KEY
+
+        scripts:
+          - name: Install AppFlight CLI
+            script: |
+              dart pub global activate appflight_cli
+              echo 'export PATH="$PATH:$HOME/.pub-cache/bin"' >> $CM_ENV
+
+          - name: Build APK
+            script: ./gradlew assembleStageRelease
+
+          - name: Upload to AppFlight
+            script: appflight upload --flavor stage --ci
+
+        artifacts:
+          - app/build/outputs/apk/**/*.apk
+    ```
+
+  </TabItem>
 </Tabs>
 
 :::warning PATH for the installed binary
@@ -139,6 +168,27 @@ Install the CLI once, then repeat build and upload per flavor:
     ```
 
   </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```yaml
+        scripts:
+          - name: Install AppFlight CLI
+            script: |
+              dart pub global activate appflight_cli
+              echo 'export PATH="$PATH:$HOME/.pub-cache/bin"' >> $CM_ENV
+
+          - name: Build and upload stage
+            script: |
+              ./gradlew assembleStageRelease
+              appflight upload --flavor stage --ci
+
+          - name: Build and upload qa
+            script: |
+              ./gradlew assembleQaRelease
+              appflight upload --flavor qa --ci
+    ```
+
+  </TabItem>
 </Tabs>
 
 ## Smaller, faster APKs for testing (Flutter)
@@ -159,6 +209,6 @@ If `appflight upload` exits non-zero the Codemagic step fails. Common codes:
 | Code | Meaning | Fix |
 |---|---|---|
 | 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
-| 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter) or `android/app/build.gradle` (React Native) |
+| 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter), `android/app/build.gradle` (React Native), or `app/build.gradle` (Kotlin) |
 | 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
 | 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |

@@ -55,6 +55,7 @@ The CLI reads the version automatically from your project files:
 
 - **Flutter** — reads `version` from `pubspec.yaml` (e.g. `1.2.3+45`)
 - **React Native** — reads `versionName` + `versionCode` from `android/app/build.gradle` and combines them as `1.2.3+45`
+- **Kotlin** — reads `versionName` + `versionCode` from root `app/build.gradle` (no `android/` wrapper) and combines them the same way
 
 Override either at upload time:
 

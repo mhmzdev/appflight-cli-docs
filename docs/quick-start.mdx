@@ -32,6 +32,7 @@ Run from your project root. The CLI will ask which framework you're using — or
 ```bash
 appflight init --project-type flutter
 appflight init --project-type react-native
+appflight init --project-type kotlin
 ```
 
 **Flavored app:**
@@ -67,6 +68,14 @@ This creates `appflight.json` in your project root. Commit it — it's shared wi
 
     ```bash
     cd android && ./gradlew assembleStageRelease
+    appflight upload --flavor stage
+    ```
+
+  </TabItem>
+  <TabItem label="Kotlin" value="kotlin">
+
+    ```bash
+    ./gradlew assembleStageRelease
     appflight upload --flavor stage
     ```
 

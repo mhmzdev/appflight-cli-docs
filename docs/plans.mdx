@@ -15,6 +15,20 @@ AppFlight has two subscription tiers. Limits are enforced server-side — the CL
 | Rollover uploads at cap | — | ✓ (oldest build auto-rotates) |
 | CLI upload | ✓ | ✓ |
 | Tester push notifications | ✓ | ✓ |
+| Invite testers by email | ✓ | ✓ |
+
+## Testers
+
+Testers are invited by email from the AppFlight mobile app — on a personal app and an
+organization app alike. You do not need an organization to share builds.
+
+Inviting an address that has no AppFlight account yet is not an error. The invite is held
+and attaches automatically the moment that person signs up with the same email, so their
+first launch already has your app on it. From then on they get a push notification on
+every build you upload — including the ones you push from CI.
+
+**The number of testers is not a plan limit today**, on either tier. See
+[app-flight.com](https://app-flight.com/) for current plan details.
 
 ## How limits are enforced
 

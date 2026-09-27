@@ -1,9 +1,10 @@
 ---
 title: Get the App
-description: Download the AppFlight mobile app to manage testers, review builds, and monitor distributions.
+description: The AppFlight Android app — how testers receive builds, and the few things developers still need it for.
 ---
 
-The AppFlight mobile app is the companion to the CLI. After you upload an APK, testers and admins interact with the build through the app — reviewing details, accepting invites, and receiving push notifications.
+The AppFlight app is how **testers** receive your builds. As a **developer** you can do almost
+everything from the terminal — see [Quick Start](/quick-start) — and only need the app for two things.
 
 ## Download
 
@@ -13,24 +14,40 @@ The AppFlight mobile app is the companion to the CLI. After you upload an APK, t
 
 Available on Android.
 
-## What the app does
+## Invited as a tester?
 
-| Capability | Description |
+Install the app, open it, and choose **Continue as a tester** — you do not need to create an app or an
+organization. Sign in with the email address you were invited on, and the apps you have been invited
+to are already there. From then on you get a push notification every time a new build is uploaded.
+
+Invited on an address that had no account yet? That is fine — the invite is held and attaches itself
+the moment you sign up with that email.
+
+## What developers still need it for
+
+| Genuinely app-only | Why |
 |---|---|
-| Manage apps | Create apps, invite testers, generate API keys |
-| Review builds | See APK metadata, version history, release notes |
-| Tester notifications | Receive push notifications when a new build is uploaded |
-| Subscription | Upgrade to First Class from **Settings → Subscription** |
+| Subscribing to First Class | Billed through Google Play, so the purchase happens on a device signed in to the account being billed. Run [`appflight upgrade`](/commands/upgrade) to get the link. |
+| Changing an organization member's role | Admin action under **Settings → Team**. |
 
-## Why you need it
+Everything else has a terminal equivalent:
 
-The CLI handles uploads. The app handles everything else:
+| Used to need the app | Now |
+|---|---|
+| Sign up | [`appflight signup`](/commands/signup) |
+| Generate an API key | [`appflight keys create`](/commands/keys) |
+| Create an app | [`appflight apps create`](/commands/apps) |
+| See your apps and plan usage | [`appflight apps list`](/commands/apps) |
+| Revoke a key | [`appflight keys revoke`](/commands/keys) or [`appflight logout`](/commands/logout) |
 
-- **API keys** — generated inside the app under **Settings → API Keys**; required for `appflight login --api-key`
-- **Tester management** — invite testers and manage access per app
-- **Subscription** — upgrade or check your current plan
+## What the app is still good at
+
+- Reviewing builds — APK metadata, version history, release notes
+- Inviting testers by email and managing access per app
+- Push notifications when a build lands
+- Checking or changing your subscription
 
 ## Requirements
 
 - Android 8.0 (API 26) or higher
-- An AppFlight account (sign up free inside the app)
+- An AppFlight account — create one in the app, or with [`appflight signup`](/commands/signup)

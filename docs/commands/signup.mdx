@@ -1,0 +1,72 @@
+---
+title: signup
+description: Create an AppFlight account from the terminal. Individual accounts only.
+---
+
+Creates an AppFlight account without the mobile app.
+
+```bash
+appflight signup
+```
+
+```
+AppFlight Terms & Conditions: https://docs.google.com/document/d/e/…
+AppFlight Privacy Policy: https://docs.google.com/document/d/e/…
+Do you accept the Terms & Conditions and Privacy Policy? [y/N] y
+Full name: Ada Lovelace
+Email: ada@example.com
+Password:
+Confirm password:
+Creating your account…
+✓ Account created for ada@example.com.
+  Check your inbox to verify your email, then run `appflight login`.
+```
+
+Individual accounts only — organizations are onboarded in the app.
+
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--accept-terms` | Accept the Terms & Conditions and Privacy Policy without the interactive prompt. For scripted sign-ups. |
+| `--resend <email>` | Resend the verification email for an account that already signed up. |
+
+## What it does, and does not do
+
+`signup` creates the account and sends the verification email. It does **not** log you in: no API key
+is minted and no credentials file is written. The next step is always
+[`appflight login`](/commands/login).
+
+Email verification is required before the CLI can mint a key, so an unverified account cannot upload
+yet. `login` will tell you if you try.
+
+## Terms and privacy
+
+Terms come **first**, before you are asked for anything else. Both URLs are printed and an explicit
+`y` is required; anything else — including pressing enter — prints `Cancelled.` and exits without
+creating anything. That ordering is deliberate: the account is created by the call that happens
+*after* this prompt, so declining can never leave a half-made account behind.
+
+For non-interactive use, `--accept-terms` records the same acceptance:
+
+```bash
+appflight signup --accept-terms
+```
+
+## Resending the verification email
+
+```bash
+appflight signup --resend ada@example.com
+```
+
+> **Note:** `--resend` also prompts for your password. Sending a verification link requires a fresh sign-in, not just the address.
+
+## When signup fails
+
+| Message | Fix |
+|---|---|
+| `That email is already registered. Run` `appflight login` `instead.` | The account exists — log in. |
+| `This email belongs to an organization. Sign in through the AppFlight app.` | Org members are onboarded and sign in via the app. |
+| A weak-password refusal from the auth service | Choose a longer password. |
+
+More detail in [Troubleshooting](/troubleshooting).

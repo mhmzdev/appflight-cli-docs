@@ -1,31 +1,49 @@
 ---
 title: Quick Start
-description: Get from zero to your first upload in under 5 minutes.
+description: From a clean machine to your first upload, entirely in the terminal.
 ---
 
-## 1. Generate an API key
+**Developers, continue here** — everything below happens in a terminal. **Testers**, you only need the
+mobile app: see [Get the App](/get-the-app).
 
-Open the **AppFlight mobile app** → **Settings → API Keys** → tap **+**.
+## 1. Install the CLI
 
-Give it a label (e.g. `Macbook`) and copy the key. You won't see it again.
-
-> **Warning:** Store the key securely. It cannot be viewed again after dismissing the dialog — only revoked and regenerated.
-
-## 2. Install the CLI
+The package is `appflight_cli`; the command it installs is `appflight`.
 
 ```bash
 dart pub global activate appflight_cli
 ```
 
-## 3. Login
+## 2. Create an account
+
+```bash
+appflight signup
+```
+
+Full name, email, and a password. You will be asked to accept the Terms and Privacy Policy, then a
+verification link arrives by email — open it before the next step.
+
+Already have an account? Skip to step 3.
+
+## 3. Log in
 
 ```bash
 appflight login
 ```
 
-Paste your API key when prompted. Credentials are saved to `~/.appflight/credentials.json`.
+Your email and password. The CLI mints an API key for this machine and stores it for you — there is
+nothing to copy and nothing to paste.
 
-## 4. Init your project
+## 4. Register your app
+
+```bash
+appflight apps create --package com.myapp --name "My App"
+```
+
+An app has to exist on AppFlight before you can upload to it. If you skip this, step 5 offers to do it
+for you.
+
+## 5. Init your project
 
 Run from your project root. The CLI will ask which framework you're using — or skip the prompt:
 
@@ -53,7 +71,7 @@ You'll be prompted for the package name (applicationId).
 
 This creates `appflight.json` in your project root. Commit it — it's shared with your team.
 
-## 5. Build and upload
+## 6. Build and upload
 
 <Tabs groupId="framework">
   <TabItem label="Flutter" value="flutter">

@@ -1,9 +1,10 @@
 ---
 title: AppFlight CLI
-description: Upload Android APKs to AppFlight directly from your terminal or CI pipeline — no phone required.
+description: Upload Android APKs to AppFlight from your terminal or CI pipeline — no phone required.
 ---
 
-AppFlight CLI lets you upload Android APKs to AppFlight directly from your laptop or CI pipeline — no phone required.
+**Developers, continue here** — you can sign up, register an app and ship a build without ever opening
+the mobile app. **Testers**, you only need the app: see [Get the App](/get-the-app).
 
 ```bash
 appflight upload --flavor stage
@@ -11,32 +12,48 @@ appflight upload --flavor stage
 
 ## Why CLI?
 
-The AppFlight mobile app is great for managing testers and browsing builds, but real development happens on laptops and build servers. The CLI closes that loop:
+The mobile app is great for managing testers and browsing builds, but real development happens on
+laptops and build servers. The CLI closes that loop:
 
+- Sign up, register an app and ship a build without leaving the terminal
 - Build on your machine → upload in one command
 - Wire into GitHub Actions or Codemagic
-- No Firebase credentials or service account keys needed — just an API key
+- No Firebase credentials or service account keys — and no API key to copy by hand
 
 ## How it works
 
-1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → tap **+**
-2. **Install the CLI** — `dart pub global activate appflight_cli`
-3. **Init your project** — `appflight init --flavors stage:com.myapp.stage,prod:com.myapp`
-4. **Login** — `appflight login` and paste your key
-5. **Build and upload** — `flutter build apk --flavor stage --release && appflight upload --flavor stage`
+```bash
+dart pub global activate appflight_cli        # install
+appflight signup                             # create an account, verify by email
+appflight login                              # sign in; the key is minted for you
+appflight apps create --package com.myapp --name "My App"
+appflight init                               # writes appflight.json
+flutter build apk --flavor stage --release
+appflight upload --flavor stage               # testers get a push notification
+```
+
+Five commands from a clean machine to a build on your testers' phones. See
+[Quick Start](/quick-start) for the same thing with explanations.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
+| [`signup`](/commands/signup) | Create an AppFlight account |
+| [`login`](/commands/login) | Sign in with email and password |
+| [`keys`](/commands/keys) | Create, list and revoke API keys for CI |
+| [`apps`](/commands/apps) | Register an app, or list the apps on this account |
 | [`init`](/commands/init) | Create `appflight.json` in your project root |
-| [`login`](/commands/login) | Save your API key to `~/.appflight/credentials.json` |
-| [`upload`](/commands/upload) | Build and upload an APK to AppFlight |
+| [`upload`](/commands/upload) | Upload an APK and notify testers |
 | [`whoami`](/commands/whoami) | Print the currently authenticated user |
-| [`logout`](/commands/logout) | Remove saved credentials from this machine |
+| [`logout`](/commands/logout) | Revoke this machine's key and remove credentials |
+| [`upgrade`](/commands/upgrade) | Show how to upgrade to First Class |
+| [`analytics`](/commands/analytics) | Manage anonymous usage analytics |
 
 ## Requirements
 
 - Dart SDK `>=3.0.0`
-- An AppFlight account with at least one app created
-- An API key from the AppFlight mobile app
+- An AppFlight account — [`appflight signup`](/commands/signup) creates one
+
+The mobile app is how testers receive builds. As a developer you only need it for the two things that
+are genuinely phone-only: subscribing to First Class, and changing an organization member's role.

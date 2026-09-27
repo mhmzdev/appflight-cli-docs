@@ -1,15 +1,51 @@
 ---
 title: logout
-description: Removes saved credentials from the local machine.
+description: Revokes this machine's API key on AppFlight, then removes the saved credentials.
 ---
 
-Removes saved credentials from the local machine.
+Revokes this machine's API key on AppFlight, then removes the saved credentials.
 
 ```bash
 appflight logout
 ```
 
-> **Note:** `logout` only deletes `~/.appflight/credentials.json`. The API key itself remains active on AppFlight. To fully revoke it, go to **AppFlight app → Settings → API Keys** and swipe to revoke.
+```
+✓ Key revoked and credentials removed.
+```
+
+The key is revoked **server-side first** — no phone needed, and nothing is left live behind you. Only
+once that succeeds is the credentials file deleted.
+
+> **Note:** `logout` revokes only this machine's key. Keys you created with [`appflight keys create`](/commands/keys) for CI are untouched — that is the point of keeping them separate.
+
+## Outcomes
+
+| What happened | Output | Credentials file |
+|---|---|---|
+| The key was revoked by this call | `✓ Key revoked and credentials removed.` | Deleted |
+| The key was already revoked, or no longer exists | `✓ Credentials removed. (Key was already revoked or not found.)` | Deleted |
+| You were not logged in | `Not logged in — nothing to do.` | Nothing to delete |
+| The key does not resolve against this environment | Error, exit `6` | **Kept** |
+| The network was unreachable | Error, exit `64` | **Kept** |
+
+In the last two cases the file is deliberately preserved: it may be the only record of a key that is
+still live, so `logout` refuses to throw it away silently.
+
+## Using `APPFLIGHT_API_KEY`
+
+When the `APPFLIGHT_API_KEY` environment variable is set, that key is the one in use — and `logout`
+will **not** revoke it:
+
+```
+Using APPFLIGHT_API_KEY — that key was not revoked and there is no saved file to remove.
+```
+
+This is intentional. A CI key lives in your pipeline's secrets, not on this machine, so a local
+`logout` has no business revoking it. To revoke a CI key, use
+[`appflight keys revoke <label-or-prefix>`](/commands/keys).
+
+If a leftover credentials file is also present, `logout` removes that file and says so — but still
+leaves the environment variable's key alone.
 
 ## After logout
 
@@ -19,4 +55,4 @@ Subsequent `upload` or `whoami` commands will fail with:
 ✗ Not logged in. Run `appflight login` or set APPFLIGHT_API_KEY.
 ```
 
-Run `appflight login` to authenticate again.
+Run [`appflight login`](/commands/login) to authenticate again.

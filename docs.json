@@ -16,48 +16,115 @@
     {
       "group": "Getting Started",
       "pages": [
-        { "title": "🚀 Overview", "href": "/" },
-        { "title": "📱 Get the App", "href": "/get-the-app" },
-        { "title": "📦 Installation", "href": "/installation" },
-        { "title": "⚡ Quick Start", "href": "/quick-start" }
+        {
+          "title": "🚀 Overview",
+          "href": "/"
+        },
+        {
+          "title": "📱 Get the App",
+          "href": "/get-the-app"
+        },
+        {
+          "title": "📦 Installation",
+          "href": "/installation"
+        },
+        {
+          "title": "⚡ Quick Start",
+          "href": "/quick-start"
+        }
       ]
     },
     {
       "group": "Commands",
       "pages": [
-        { "title": "📁 init", "href": "/commands/init" },
-        { "title": "🔑 login", "href": "/commands/login" },
-        { "title": "☁️ upload", "href": "/commands/upload" },
-        { "title": "👤 whoami", "href": "/commands/whoami" },
-        { "title": "🚪 logout", "href": "/commands/logout" },
-        { "title": "📊 analytics", "href": "/commands/analytics" }
+        {
+          "title": "📝 signup",
+          "href": "/commands/signup"
+        },
+        {
+          "title": "🔑 login",
+          "href": "/commands/login"
+        },
+        {
+          "title": "🔐 keys",
+          "href": "/commands/keys"
+        },
+        {
+          "title": "📦 apps",
+          "href": "/commands/apps"
+        },
+        {
+          "title": "📁 init",
+          "href": "/commands/init"
+        },
+        {
+          "title": "☁️ upload",
+          "href": "/commands/upload"
+        },
+        {
+          "title": "👤 whoami",
+          "href": "/commands/whoami"
+        },
+        {
+          "title": "🚪 logout",
+          "href": "/commands/logout"
+        },
+        {
+          "title": "⭐ upgrade",
+          "href": "/commands/upgrade"
+        },
+        {
+          "title": "📊 analytics",
+          "href": "/commands/analytics"
+        }
       ]
     },
     {
       "group": "Configuration",
       "pages": [
-        { "title": "⚙️ appflight.json", "href": "/configuration" },
-        { "title": "🖥️ Environment Variables", "href": "/environment-variables" },
-        { "title": "🧩 Supported Frameworks", "href": "/frameworks" }
+        {
+          "title": "⚙️ appflight.json",
+          "href": "/configuration"
+        },
+        {
+          "title": "🖥️ Environment Variables",
+          "href": "/environment-variables"
+        },
+        {
+          "title": "🧩 Supported Frameworks",
+          "href": "/frameworks"
+        }
       ]
     },
     {
       "group": "CI / CD",
       "pages": [
-        { "title": "🐙 GitHub Actions", "href": "/ci/github-actions" },
-        { "title": "✨ Codemagic", "href": "/ci/codemagic" }
+        {
+          "title": "🐙 GitHub Actions",
+          "href": "/ci/github-actions"
+        },
+        {
+          "title": "✨ Codemagic",
+          "href": "/ci/codemagic"
+        }
       ]
     },
     {
       "group": "Plans",
       "pages": [
-        { "title": "📋 Plans & Limits", "href": "/plans" }
+        {
+          "title": "📋 Plans & Limits",
+          "href": "/plans"
+        }
       ]
     },
     {
       "group": "Help",
       "pages": [
-        { "title": "🛠️ Troubleshooting", "href": "/troubleshooting" }
+        {
+          "title": "🛠️ Troubleshooting",
+          "href": "/troubleshooting"
+        }
       ]
     }
   ]

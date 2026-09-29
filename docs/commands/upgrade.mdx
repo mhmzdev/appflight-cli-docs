@@ -1,0 +1,32 @@
+---
+title: upgrade
+description: Show how to upgrade to First Class.
+---
+
+Prints where to upgrade to First Class.
+
+```bash
+appflight upgrade
+```
+
+```
+Settings → Subscription → Upgrade to First Class
+Or from the Play Store: https://play.google.com/store/apps/details?id=dev.mhmz.app_flight
+```
+
+That is all it does. No credentials, no network request, and no purchase happens in the CLI — so it
+works on a machine that has never run `login`, which is the point when a build server hits a plan
+ceiling and you need to know what to do about it.
+
+## Why the purchase is not in the CLI
+
+Subscriptions are billed through Google Play. Buying one requires the Play Store on a device signed
+in to the account being billed, so it happens in the AppFlight app under
+**Settings → Subscription**. Entitlement then applies everywhere, including the CLI and CI — the next
+`upload` or [`apps create`](/commands/apps) simply stops hitting the cap.
+
+## Related
+
+- [`appflight apps list`](/commands/apps) shows how many apps you have against your plan's ceiling
+- [`appflight whoami`](/commands/whoami) prints your current plan
+- [Plans & Limits](/plans) for what each tier includes

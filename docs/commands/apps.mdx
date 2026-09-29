@@ -1,0 +1,113 @@
+---
+title: apps
+description: Register and inspect your AppFlight apps from the terminal.
+---
+
+Register an app on AppFlight, and see what is already there — without the mobile app.
+
+```bash
+appflight apps create --package com.myapp --name "My App"
+appflight apps list
+```
+
+## `apps create`
+
+```bash
+appflight apps create --package <package-name> --name <display-name>
+```
+
+| Flag | Description |
+|------|-------------|
+| `--package` | **Required.** Android package name, e.g. `dev.mycompany.myapp`. |
+| `--name` | **Required.** Display name shown in the app and to testers. |
+
+```
+✓ Created "My App".
+Created app: com.myapp
+```
+
+The app id **is** the package name — that is what `appflight.json` records and what `upload` sends.
+The package name is validated locally before any request, so a typo costs nothing.
+
+Package names are unique across all of AppFlight, the same rule the Play Store applies. If someone
+else already registered yours, `create` says so.
+
+### Individual and organization apps
+
+You do not choose. `apps create` reads your account and creates the matching kind:
+
+| Your account | What gets created |
+|---|---|
+| Individual | A personal app you own |
+| Organization, role `admin` or `developer` | An **organization** app, with org admins added automatically |
+| Organization, role `member` | Refused — exit `9` |
+
+Only admins and developers may create organization apps. That is the same rule the mobile app
+applies, enforced on the server, so the CLI and the app cannot disagree:
+
+```
+✗ Only admins and developers can create organization apps.
+```
+
+Ask an admin to change your role in the app (**Settings → Team**) — a role change is genuinely
+phone-only.
+
+### At your plan's ceiling
+
+```
+✗ App limit reached for your plan (3 apps)
+Settings → Subscription → Upgrade to First Class
+Or from the Play Store: https://play.google.com/store/apps/details?id=dev.mhmz.app_flight
+```
+
+**Exit code:** `8`. The number in the message is your actual ceiling, read from the server — see
+[Plans & Limits](/plans), or run [`appflight upgrade`](/commands/upgrade).
+
+## `apps list`
+
+```bash
+appflight apps list
+```
+
+```
+Apps you can push to:
+  My App (com.myapp) — owner — 4 APKs
+  Acme Web (com.acme.web) — developer — 12 APKs
+  2 of 3 apps · Economy (free)
+
+Apps you receive builds for:
+  Someone Else's App (com.other.app) — tester — 3 APKs
+```
+
+Two sections, split by what you can actually do:
+
+- **Apps you can push to** — you can `appflight upload` to these. The `N of M apps` line counts the
+  apps **you created** against your plan's ceiling, so it can never disagree with the limit
+  `apps create` enforces.
+- **Apps you receive builds for** — you are on the app and get a push per build, but cannot upload.
+
+The tag on each row is the role the server actually enforces: `owner` for a personal app you created,
+`admin` / `developer` / `member` for an organization app, `tester` for someone else's app you were
+invited to.
+
+## Creating an app during `init`
+
+[`appflight init`](/commands/init) offers to create an unknown package for you, so a first run can be
+a single pass:
+
+```
+Package name (applicationId): com.myapp
+com.myapp is not yet registered on AppFlight. Create it now? [y/N] y
+✓ Created app: com.myapp
+✓ appflight.json written.
+```
+
+The offer is skipped when you are not logged in, when there is no terminal, and in CI — `init` never
+requires a network connection.
+
+> **Note:** An app created this way is named after its package, because `init` does not ask for a display name. If you want a friendlier name in the app and for your testers, use `appflight apps create --package <pkg> --name "My App"` before running `init`.
+
+## Inviting testers
+
+Not here. Testers are invited by email from the mobile app, on personal and organization apps alike —
+see [Plans & Limits](/plans#testers).

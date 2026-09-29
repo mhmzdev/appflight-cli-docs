@@ -5,7 +5,15 @@ description: Automate AppFlight uploads on every push using GitHub Actions.
 
 ## Setup
 
-1. **Generate an API key** — AppFlight mobile app → Settings → API Keys → **+** — label it `GitHub Actions`
+1. **Create a CI key** — run `appflight keys create --name "GitHub Actions"` on your machine. The raw key is printed once; copy it now.
+
+:::warning Do not use your laptop's login key in CI
+`appflight login` mints a key named `cli:<hostname>` for the machine you ran it on, and the **next**
+`login` on that machine revokes it and mints a fresh one. Paste that key into a pipeline and the
+pipeline starts failing with exit `6` the next time you sign in on your laptop — with nothing in the
+CI logs to explain why. A key from `keys create` is never rotated, which is the whole reason it
+exists.
+:::
 2. **Add secret** — GitHub repo → Settings → Secrets and variables → Actions → New repository secret → `APPFLIGHT_API_KEY`
 3. **Commit `appflight.json`** to your repository (run `appflight init` locally first)
 
@@ -296,5 +304,6 @@ If `appflight upload` exits non-zero the workflow fails. Common codes:
 |---|---|---|
 | 4 | APK not found | Check `apkPath` in `appflight.json` matches your build output |
 | 5 | Version already uploaded | Bump version in `pubspec.yaml` (Flutter), `android/app/build.gradle` (React Native), or `app/build.gradle` (Kotlin) |
-| 6 | API key invalid or revoked | Regenerate key in AppFlight mobile → Settings → API Keys |
-| 8 | APK limit reached (plan limit) | Upgrade to First Class in the mobile app |
+| 6 | API key invalid or revoked | Check with `appflight keys list`; mint a fresh one with `appflight keys create --name …` |
+| 8 | Plan limit reached | Run `appflight upgrade` for the upgrade path |
+| 9 | Forbidden — your role may not do this | Only org admins and developers can create apps or upload to org apps |

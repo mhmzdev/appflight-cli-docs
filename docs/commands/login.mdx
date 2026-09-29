@@ -1,41 +1,119 @@
 ---
 title: login
-description: Verifies your API key and saves credentials to ~/.appflight/credentials.json.
+description: Signs in with your email and password and mints an API key for this machine.
 ---
 
-Verifies your API key and saves credentials to `~/.appflight/credentials.json`.
+Signs in with your email and password, mints an API key for this machine, and saves it locally.
 
 ```bash
 appflight login
 ```
 
-## Steps
+```
+Email: you@example.com
+Password:
+Signing in…
+✓ Logged in as you@example.com (cli:macbook)
+```
 
-1. Generate a key in the **AppFlight mobile app → Settings → API Keys**
-2. Run `appflight login`
-3. Paste the key when prompted (input is hidden)
+No phone required, and you never see or paste a key. If you do not have an account yet, run
+[`appflight signup`](/commands/signup) first.
 
-The CLI verifies the key against AppFlight before saving. If verification fails, nothing is written.
+## Flags
+
+| Flag | Description |
+|------|-------------|
+| `--email <address>` | Skip the email prompt. You are still prompted for the password. |
+| `--key <raw-key>` | Save a key you already have instead of signing in. Mints nothing, rotates nothing. |
+
+## Three ways to log in
+
+| Mode | What it does |
+|---|---|
+| `appflight login` | Prompts for email, then password (input hidden). Mints this machine's key. |
+| `appflight login --email you@example.com` | Skips the email prompt; still prompts for the password. |
+| `appflight login --key <raw-key>` | Saves a key you already have. Mints nothing, rotates nothing. |
+
+The password is never stored — only the key it mints.
+
+## This machine's key
+
+A password login creates an API key named `cli:<hostname>` — for example `cli:macbook`. It is stored
+in the credentials file and **never printed**.
+
+> **Note:** Logging in again on the same machine **rotates** that key: the old one is revoked and a fresh one is minted. If you have `appflight` running in another shell on this machine, it will stop working — log in again there too.
+
+Rotation only ever touches the key with this machine's name. Keys you created with
+[`appflight keys create`](/commands/keys) for CI are never rotated, which is exactly why CI should use
+its own key.
 
 ## Credentials file
 
-Saved to `~/.appflight/credentials.json` with `600` permissions (owner read/write only).
+Written with `600` permissions (owner read/write only), in your platform's standard config
+directory — **not** a dot-directory in your home folder:
+
+| Platform | Location |
+|---|---|
+| macOS | `~/Library/Application Support/appflight/credentials.json` |
+| Linux | `$XDG_CONFIG_HOME/appflight/credentials.json` (usually `~/.config/appflight/`) |
+| Windows | `%APPDATA%\appflight\credentials.json` |
+
+Contents:
 
 ```json
 {
   "apiKey": "appflight_xxxxxxxxxxxx",
   "uid": "firebase-uid",
-  "email": "you@example.com"
+  "email": "you@example.com",
+  "keyId": "…",
+  "keyName": "cli:macbook"
 }
 ```
 
-> **Warning:** Never commit `~/.appflight/credentials.json`. For CI/CD, use the `APPFLIGHT_API_KEY` environment variable instead — no `login` step required.
+`keyId` and `keyName` are what let `logout` revoke precisely the right key. A file written by
+`--key` has only the first three fields.
 
-## CI / CD
+> **Warning:** Never commit that file. For CI, use a dedicated key from [`appflight keys create`](/commands/keys) in the `APPFLIGHT_API_KEY` environment variable — no `login` step required.
 
-On build servers, skip `login` and set the environment variable:
+## In CI
 
-```bash
-export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
-appflight upload --flavor stage
+`login` refuses to prompt for a password on a build server:
+
 ```
+✗ CI detected — refusing to prompt for a password.
+  Use `appflight login --key <key>` with a CI-scoped key (see `keys create`) or set APPFLIGHT_API_KEY instead.
+```
+
+**Exit code:** `64`
+
+Set `APPFLIGHT_API_KEY` instead — see [GitHub Actions](/ci/github-actions) or
+[Codemagic](/ci/codemagic).
+
+## Pasting a key that is not this machine's
+
+Because `--key` rotates nothing, a key minted by an earlier password login can still be live. `login`
+says so after saving, and names the command to clean it up:
+
+```
+⚠ A key named "cli:macbook" is still active on this account from an earlier login.
+  Revoke it with `appflight keys revoke appflight_Ylkvd8` if you no longer need it.
+```
+
+Nothing is printed when the key you pasted *is* this machine's key.
+
+## When login fails
+
+| Message | Exit | Fix |
+|---|---|---|
+| `Wrong email or password.` | `6` | Deliberately generic — it does not reveal whether the account exists. |
+| `Check your inbox to verify your email, then run` `appflight login` `again.` | `6` | Verify, or resend with `appflight signup --resend <email>`. |
+| `Set a password in the AppFlight app before using the CLI: Settings → Account.` | `6` | An admin-invited org member must set their own password in the app first. |
+| `No AppFlight account for this email yet.` | `6` | Run [`appflight signup`](/commands/signup). |
+| `This account has been disabled. Contact AppFlight support.` | `6` | — |
+| `Too many login attempts, try again later.` | `64` | Wait and retry. |
+| `Key rejected. Check it and try again.` | `6` | `--key` only — check the value. |
+
+Note that a rate limit exits `64` (a usage error), not `6` — every other row here is an auth
+failure. CI scripts that branch on exit codes should treat `64` as "retry later", not "bad key".
+
+More detail in [Troubleshooting](/troubleshooting).

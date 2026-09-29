@@ -1,0 +1,95 @@
+---
+title: keys
+description: Create, list, and revoke API keys from the terminal — no phone required.
+---
+
+Manage this account's API keys. Use these for CI: a key you create here is **never rotated** by a
+later `login`, so a pipeline cannot be broken by someone signing in on their laptop.
+
+```bash
+appflight keys create --name "github-actions"
+appflight keys list
+appflight keys revoke appflight_Ylkvd8
+```
+
+## `keys create`
+
+```bash
+appflight keys create --name <label>
+```
+
+| Flag | Description |
+|------|-------------|
+| `--name` | **Required.** Label for the new key, e.g. `github-actions`. No whitespace. |
+
+The raw key is printed **once** and never again:
+
+```
+✓ Created key "github-actions".
+⚠ This is the only time the raw key is shown — copy it now:
+
+  appflight_Ylkvd8SZpnH2-LxeAqC8d06ybcDx-G9MUH_VlD4533E
+
+  Prefix appflight_Ylkvd8 — how it appears in `keys list`,
+  and how to revoke it:
+    appflight keys revoke appflight_Ylkvd8
+```
+
+Copy it into your CI secret store now. The prefix is what `keys list` shows and what `keys revoke`
+takes — it is otherwise invisible until the next `keys list`.
+
+> **Note:** Labels cannot contain whitespace, matching the rule the mobile app applies. A label with a space is refused with a hyphenated suggestion — the fix is offered, not applied, because the label is the handle you later type into `keys revoke`.
+
+## `keys list`
+
+```bash
+appflight keys list
+```
+
+```
+LABEL                  PREFIX            CREATED     LAST USED
+cli:macbook (current)  appflight_Ylkvd8  2026-09-12  2026-09-27
+github-actions         appflight_Qk3mVz  2026-09-02  2026-09-26
+codemagic              appflight_Tt91bB  2026-08-28  never
+```
+
+`(current)` marks the key this CLI is using right now. `never` means the key has been created but not
+yet used — useful for spotting a secret you pasted into the wrong pipeline.
+
+With no keys yet:
+
+```
+No API keys yet. Run `appflight keys create --name <label>`.
+```
+
+## `keys revoke`
+
+```bash
+appflight keys revoke <label-or-prefix> [--yes] [--force]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--yes` | Skip the confirmation prompt. |
+| `--force` | Allow revoking the key this CLI is currently using. |
+
+Takes either an exact label or a partial prefix. An ambiguous prefix is refused rather than guessed —
+revoking the wrong key breaks a pipeline silently.
+
+Revoking is immediate and cannot be undone; the key stops working everywhere it is installed.
+
+> **Note:** By default `keys revoke` refuses to revoke the key this CLI is using — that is what [`appflight logout`](/commands/logout) is for. Pass `--force` if you really mean it.
+
+Without a terminal — in CI, or piped — the confirmation cannot be answered, so `keys revoke` refuses
+unless `--yes` is passed.
+
+## Which key should I use where?
+
+| Where | Key | How it is created |
+|---|---|---|
+| Your laptop | `cli:<hostname>` | Minted automatically by [`appflight login`](/commands/login). Never printed. Rotated by the next `login` on that machine. |
+| CI / CD | Whatever you label it | `keys create --name …`. Printed once. **Never** rotated. |
+
+Using a laptop's login key in CI is the one mistake worth avoiding: the next time you run `login` on
+that machine, the old key is revoked and the pipeline starts failing with exit `6` for no visible
+reason. See [GitHub Actions](/ci/github-actions).

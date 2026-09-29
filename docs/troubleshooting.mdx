@@ -78,11 +78,18 @@ appflight upload --flavor stage --verbose
 ✗ App not found on AppFlight: com.myapp.stage
 ```
 
-**Cause:** The package name in `appflight.json` doesn't match any app registered on AppFlight. The app must be created in the **AppFlight mobile app** before the CLI can upload to it.
+**Cause:** The package name in `appflight.json` doesn't match any app registered on AppFlight. The app
+has to exist before the CLI can upload to it.
 
 **Fix:**
-1. Open the AppFlight mobile app and create the app with the exact same package name
-2. Or check `appflight.json` for a typo in `packageName`
+
+```bash
+appflight apps list                                        # is it there under a different name?
+appflight apps create --package com.myapp.stage --name "My App"
+```
+
+Or check `appflight.json` for a typo in `packageName`. Note that `appflight init` offers to create an
+unknown package for you when you are logged in.
 
 ---
 
@@ -212,9 +219,20 @@ The `--flavors` flag uses the flavor name to derive the APK path. If your build 
 ✗ Only admins and developers can upload to organization apps.
 ```
 
-**Cause:** Your account has the `member` role in the organization. Only `admin` and `developer` roles can upload builds.
+Or, when creating an app:
 
-**Fix:** Ask an admin to update your role in the AppFlight mobile app → Settings → Team.
+```
+✗ Only admins and developers can create organization apps.
+```
+
+**Exit code:** `9`
+
+**Cause:** Your account has the `member` role in the organization. Only `admin` and `developer` roles
+can upload builds or create apps. This is enforced on the server, so the CLI and the mobile app apply
+the same rule.
+
+**Fix:** Ask an admin to update your role in the AppFlight app → **Settings → Team**. A role change is
+genuinely app-only.
 
 ---
 
@@ -244,12 +262,92 @@ export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx
 ✗ API key rejected. Check it and try again.
 ```
 
-**Cause:** The key was revoked in the AppFlight mobile app, or copied incorrectly.
+**Cause:** The key was revoked, or copied incorrectly.
 
 **Fix:**
-1. Go to **AppFlight app → Settings → API Keys**
-2. Check if the key is still active (not revoked)
-3. Generate a new key if needed, then run `appflight login` again
+1. Run `appflight keys list` and check the key is still there
+2. If it is gone, mint a replacement — `appflight keys create --name <label>` for CI, or
+   `appflight login` again for this machine
+3. If you are in CI, confirm `APPFLIGHT_API_KEY` holds the whole key, including the `appflight_` prefix
+
+---
+
+### Email not verified
+
+```
+✗ Check your inbox to verify your email, then run `appflight login` again.
+```
+
+**Exit code:** `6`
+
+**Cause:** The account exists but the email has not been confirmed. The CLI cannot mint an API key for
+an unverified account.
+
+**Fix:** Open the verification link, then run `appflight login` again. Lost the email?
+
+```bash
+appflight signup --resend you@example.com
+```
+
+`--resend` also prompts for your password — sending the link requires a fresh sign-in, not just the
+address.
+
+---
+
+### Set a password in the app first
+
+```
+✗ Set a password in the AppFlight app before using the CLI: Settings → Account.
+```
+
+**Exit code:** `6`
+
+**Cause:** An organization admin created your account with a temporary password, so you must replace it
+yourself before it can be used anywhere else.
+
+**Fix:** Sign in to the AppFlight app, set your own password under **Settings → Account**, then run
+`appflight login`. This one really is app-only.
+
+---
+
+### CI detected — refusing to prompt for a password
+
+```
+✗ CI detected — refusing to prompt for a password.
+  Use `appflight login --key <key>` with a CI-scoped key (see `keys create`) or set APPFLIGHT_API_KEY instead.
+```
+
+**Exit code:** `64`
+
+**Cause:** The `CI` environment variable is set. There is no one at a keyboard to type a password, so
+`login` refuses rather than hanging.
+
+**Fix:** Use a key made for CI:
+
+```bash
+appflight keys create --name "github-actions"   # on your machine, once
+export APPFLIGHT_API_KEY=appflight_xxxxxxxxxxxx  # in your pipeline's secrets
+```
+
+See [GitHub Actions](/ci/github-actions) or [Codemagic](/ci/codemagic). Do not reuse the key `login`
+minted for your laptop — the next `login` there revokes it.
+
+---
+
+### logout could not revoke the key
+
+```
+✗ Could not revoke this key against the "prod" environment (key not found). If you logged in with a different --env, retry logout with that one. Credentials were not removed.
+```
+
+**Exit code:** `6`
+
+**Cause:** The stored key does not resolve against the environment `logout` ran against, so `logout`
+cannot tell whether it is revoking the right thing.
+
+**Fix:** The credentials file is kept on purpose — it may be the only record of a key that is still
+live. Re-run `logout` against the environment you logged in with. If you are unsure, list your keys
+with `appflight keys list` and revoke by prefix.
 
 ---
 

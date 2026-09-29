@@ -109,6 +109,37 @@ Prompts for framework choice, then a single package name (applicationId).
 
 Commit `appflight.json` — it's team-shared config.
 
+## Creating the app on AppFlight
+
+An app has to exist on AppFlight before you can upload to it. If you are logged in and the package
+name you give is not registered yet, `init` offers to create it there and then:
+
+```
+Package name (applicationId): com.myapp
+com.myapp is not yet registered on AppFlight. Create it now? [y/N] y
+✓ Created app: com.myapp
+✓ appflight.json written.
+```
+
+Answer anything other than `y` and `init` carries on as normal — the app just has to exist before your
+first [`upload`](/commands/upload). You can create it later with
+[`appflight apps create`](/commands/apps).
+
+`init` never requires a network connection. The offer is skipped entirely — with no request made and no
+credentials read — when:
+
+- you are not logged in — `init` prints one line and carries on:
+
+  ```
+  Not logged in — run `appflight login`, then `init` can create this app on AppFlight directly.
+  ```
+
+- there is no terminal to answer the prompt
+- the `CI` environment variable is set
+
+If the check itself fails — offline, a dead key, a timeout — `init` writes `appflight.json` exactly as
+it always has. The offer is a convenience and never a gate.
+
 ## Package name validation
 
 - Must be lowercase, dot-separated, at least 2 segments (e.g. `com.myapp` or `com.mycompany.myapp`)

@@ -5,6 +5,32 @@ description: Project config file — lives in your Flutter project root alongsid
 
 Lives in your Flutter project root alongside `pubspec.yaml`. Commit it — it's team-shared config.
 
+## Files the CLI creates
+
+Exactly three, and only one of them is in your project:
+
+| File | Where | In your repo? |
+|---|---|---|
+| `appflight.json` | Your project root | **Yes — commit it.** It describes the project and is shared with your team. |
+| `credentials.json` | Your OS config directory | **No, deliberately.** See below. |
+| `analytics.json` | Same config directory | No — your analytics consent, per machine. |
+
+The config directory is your platform's standard one:
+
+| Platform | Path |
+|---|---|
+| macOS | `~/Library/Application Support/appflight/` |
+| Linux | `$XDG_CONFIG_HOME/appflight/` (usually `~/.config/appflight/`) |
+| Windows | `%APPDATA%\appflight\` |
+
+`credentials.json` holds a live API key, which is exactly why it lives outside your project: anything
+inside a repository gets committed eventually, or copied into a Docker build context. Keeping it in the
+config directory means it cannot be committed by accident — the same reason `gh`, `aws` and `docker`
+store their credentials there. It is written with `600` permissions (owner read/write only).
+
+So nothing scatters files through your project root. `appflight.json` is the only one, and it is meant
+to be there.
+
 ## Full example
 
 ```json

@@ -105,6 +105,8 @@ com.myapp is not yet registered on AppFlight. Create it now? [y/N] y
 The offer is skipped when you are not logged in, when there is no terminal, and in CI — `init` never
 requires a network connection.
 
+> **Note:** An app created this way is named after its package, because `init` does not ask for a display name. If you want a friendlier name in the app and for your testers, use `appflight apps create --package <pkg> --name "My App"` before running `init`.
+
 ## Inviting testers
 
 Not here. Testers are invited by email from the mobile app, on personal and organization apps alike —
